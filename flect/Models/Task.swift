@@ -1,19 +1,23 @@
 import Foundation
 
-struct TaskItem: Identifiable, Codable {
+struct TaskModel: Identifiable, Codable {
     let id: UUID
     var title: String
+    var description: String
     var isCompleted: Bool
     var priority: TaskPriority
-    let dateCreated: Date
+    let createdAt: Date
+    var updatedAt: Date
     var dueDate: Date?
     
-    init(title: String, isCompleted: Bool = false, priority: TaskPriority = .medium, dateCreated: Date = Date(), dueDate: Date? = nil) {
-        self.id = UUID()
+    init(id: UUID = UUID(), title: String, description: String = "", isCompleted: Bool = false, priority: TaskPriority = .medium, dueDate: Date? = nil) {
+        self.id = id
         self.title = title
+        self.description = description
         self.isCompleted = isCompleted
         self.priority = priority
-        self.dateCreated = dateCreated
+        self.createdAt = Date()
+        self.updatedAt = Date()
         self.dueDate = dueDate
     }
 }
@@ -26,16 +30,20 @@ enum TaskPriority: String, CaseIterable, Codable {
     var displayName: String {
         switch self {
         case .low: return "Low"
-        case .medium: return "Medium"  
+        case .medium: return "Medium"
         case .high: return "High"
         }
     }
     
     var color: String {
         switch self {
-        case .low: return "mediumGrey"
-        case .medium: return "accent"
-        case .high: return "error"
+        case .low: return "#4CAF50"
+        case .medium: return "#FF9800"
+        case .high: return "#F44336"
         }
     }
-} 
+}
+
+// MARK: - Legacy Support
+typealias Task = TaskModel
+typealias TaskItem = TaskModel 

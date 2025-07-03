@@ -6,6 +6,7 @@ struct HomeView: View {
     @State private var selectedEntry: JournalEntry?
     @State private var showingJournalList = false
     @State private var showingProfile = false
+    @State private var forceRefresh = false
     
     var body: some View {
         NavigationView {
@@ -33,7 +34,13 @@ struct HomeView: View {
             .navigationBarHidden(true)
         }
         .sheet(isPresented: $showingBrainDump) {
-            BrainDumpView()
+            BrainDumpView(viewModel: viewModel)
+        }
+        .onChange(of: showingBrainDump) { newValue in
+            if newValue == false {
+                viewModel.loadData()
+                forceRefresh.toggle()
+            }
         }
         .sheet(item: $selectedEntry) { entry in
             JournalDetailView(entry: entry)
@@ -105,8 +112,8 @@ struct HomeView: View {
                 if let todaysEntry = viewModel.todaysEntry {
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
-                            Text(todaysEntry.mood.rawValue)
-                            Text(todaysEntry.mood.displayName)
+                            Text(todaysEntry.moodEmoji)
+                            Text(todaysEntry.moodDisplayName)
                                 .font(.subheadline)
                                 .foregroundColor(.textMain)
                             Spacer()
@@ -235,7 +242,9 @@ struct HomeView: View {
                 LazyVStack(spacing: 8) {
                     ForEach(Array(viewModel.pendingTasks.prefix(3))) { task in
                         TaskCard(task: task) {
-                            viewModel.toggleTaskCompletion(task)
+                            _Concurrency.Task {
+                                await viewModel.toggleTaskCompletion(task)
+                            }
                         } onTap: {
                             // Navigate to task detail
                         }

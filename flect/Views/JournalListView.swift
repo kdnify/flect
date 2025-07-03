@@ -24,7 +24,7 @@ struct JournalListView: View {
         
         // Apply mood filter
         if let moodFilter = selectedMoodFilter {
-            filtered = filtered.filter { $0.mood == moodFilter }
+            filtered = filtered.filter { $0.mood == moodFilter.rawValue }
         }
         
         return filtered.sorted { $0.date > $1.date }
@@ -172,14 +172,14 @@ struct JournalListView: View {
 #Preview {
     JournalListView(entries: [
         JournalEntry(
-            mood: .focused,
-            reflection: "Today was productive and I managed to organize my thoughts effectively.",
-            progressNotes: "Successfully identified key priorities and made good progress on planning.",
-            extractedTasks: [
-                TaskItem(title: "Review quarterly goals", priority: .high),
-                TaskItem(title: "Call mom", priority: .medium)
-            ],
-            originalBrainDump: "Need to review quarterly goals and make sure I'm on track. Also should call mom, haven't talked to her in a while."
+            originalText: "Need to review quarterly goals and make sure I'm on track. Also should call mom, haven't talked to her in a while.",
+            processedContent: "Today was productive and I managed to organize my thoughts effectively.",
+            title: "Daily Reflection",
+            mood: "Focused",
+            tasks: [
+                TaskModel(title: "Review quarterly goals", priority: .high),
+                TaskModel(title: "Call mom", priority: .medium)
+            ]
         )
     ])
 } 

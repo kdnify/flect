@@ -7,30 +7,27 @@ final class ModelsTests: XCTestCase {
     
     func testJournalEntryInitialization() {
         // Given
-        let date = Date()
-        let mood = Mood.happy
-        let reflection = "Test reflection"
-        let progressNotes = "Test progress"
-        let tasks = [TaskItem(title: "Test task")]
-        let brainDump = "Test brain dump"
+        let originalText = "Test brain dump"
+        let processedContent = "Test reflection"
+        let title = "Test Entry"
+        let mood = "happy"
+        let tasks = [TaskModel(title: "Test task")]
         
         // When
         let entry = JournalEntry(
-            date: date,
+            originalText: originalText,
+            processedContent: processedContent,
+            title: title,
             mood: mood,
-            reflection: reflection,
-            progressNotes: progressNotes,
-            extractedTasks: tasks,
-            originalBrainDump: brainDump
+            tasks: tasks
         )
         
         // Then
-        XCTAssertEqual(entry.date, date)
+        XCTAssertEqual(entry.originalText, originalText)
+        XCTAssertEqual(entry.processedContent, processedContent)
+        XCTAssertEqual(entry.title, title)
         XCTAssertEqual(entry.mood, mood)
-        XCTAssertEqual(entry.reflection, reflection)
-        XCTAssertEqual(entry.progressNotes, progressNotes)
-        XCTAssertEqual(entry.extractedTasks.count, 1)
-        XCTAssertEqual(entry.originalBrainDump, brainDump)
+        XCTAssertEqual(entry.tasks.count, 1)
     }
     
     func testJournalEntryDefaultInitialization() {
@@ -38,19 +35,21 @@ final class ModelsTests: XCTestCase {
         let entry = JournalEntry()
         
         // Then
-        XCTAssertEqual(entry.mood, .neutral)
-        XCTAssertEqual(entry.reflection, "")
-        XCTAssertEqual(entry.progressNotes, "")
-        XCTAssertEqual(entry.extractedTasks.count, 0)
-        XCTAssertEqual(entry.originalBrainDump, "")
+        XCTAssertEqual(entry.mood, "neutral")
+        XCTAssertEqual(entry.processedContent, "")
+        XCTAssertEqual(entry.title, "")
+        XCTAssertEqual(entry.tasks.count, 0)
+        XCTAssertEqual(entry.originalText, "")
     }
     
     func testJournalEntryCodable() {
         // Given
         let entry = JournalEntry(
-            mood: .excited,
-            reflection: "Test reflection",
-            originalBrainDump: "Test brain dump"
+            originalText: "Test brain dump",
+            processedContent: "Test reflection",
+            title: "Test Entry",
+            mood: "excited",
+            tasks: []
         )
         
         // When
@@ -63,8 +62,8 @@ final class ModelsTests: XCTestCase {
             let decodedEntry = try decoder.decode(JournalEntry.self, from: data)
             
             XCTAssertEqual(decodedEntry.mood, entry.mood)
-            XCTAssertEqual(decodedEntry.reflection, entry.reflection)
-            XCTAssertEqual(decodedEntry.originalBrainDump, entry.originalBrainDump)
+            XCTAssertEqual(decodedEntry.processedContent, entry.processedContent)
+            XCTAssertEqual(decodedEntry.originalText, entry.originalText)
         }
     }
     
@@ -77,7 +76,7 @@ final class ModelsTests: XCTestCase {
         let dueDate = Date()
         
         // When
-        let task = TaskItem(
+        let task = TaskModel(
             title: title,
             isCompleted: true,
             priority: priority,
@@ -93,7 +92,7 @@ final class ModelsTests: XCTestCase {
     
     func testTaskDefaultInitialization() {
         // When
-        let task = TaskItem(title: "Default task")
+        let task = TaskModel(title: "Default task")
         
         // Then
         XCTAssertEqual(task.title, "Default task")
@@ -104,7 +103,7 @@ final class ModelsTests: XCTestCase {
     
     func testTaskCodable() {
         // Given
-        let task = TaskItem(title: "Codable task", priority: .high)
+        let task = TaskModel(title: "Codable task", priority: .high)
         
         // When
         let encoder = JSONEncoder()
@@ -113,7 +112,7 @@ final class ModelsTests: XCTestCase {
         // Then
         XCTAssertNoThrow {
             let data = try encoder.encode(task)
-            let decodedTask = try decoder.decode(Task.self, from: data)
+            let decodedTask = try decoder.decode(TaskModel.self, from: data)
             
             XCTAssertEqual(decodedTask.title, task.title)
             XCTAssertEqual(decodedTask.priority, task.priority)

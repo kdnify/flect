@@ -1,22 +1,93 @@
 import Foundation
 
+// Import the system Task type to avoid conflicts with our TaskModel
+// typealias SystemTask = Task  // Remove this duplicate
+
 protocol AIServiceProtocol {
     func extractTasks(from brainDump: String) async throws -> [TaskItem]
     func generateJournalEntry(from brainDump: String, mood: Mood) async throws -> JournalEntry
     func improveReflection(_ reflection: String, style: WritingStyle) async throws -> String
 }
 
-class AIService: AIServiceProtocol {
+class AIService: AIServiceProtocol, ObservableObject {
     static let shared = AIService()
+    private let supabaseService = SupabaseService.shared
     
     private init() {}
+    
+    @Published var isProcessing = false
+    @Published var processingStatus = "Ready"
+    
+    func processText(_ text: String, mood: String? = nil) async throws -> JournalEntry {
+        await MainActor.run {
+            isProcessing = true
+            processingStatus = "Processing with AI..."
+        }
+        
+        do {
+            let processedEntry = try await supabaseService.processBrainDump(text, mood: mood)
+            
+            await MainActor.run {
+                isProcessing = false
+                processingStatus = "Processing complete!"
+            }
+            
+            // Reset status after a delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                self.processingStatus = "Ready"
+            }
+            
+            return processedEntry
+            
+        } catch {
+            await MainActor.run {
+                isProcessing = false
+                processingStatus = "Processing failed"
+            }
+            
+            // Reset status after a delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                self.processingStatus = "Ready"
+            }
+            
+            throw error
+        }
+    }
+    
+    // Legacy method for backward compatibility
+    func analyzeMood(from text: String) -> Mood {
+        // This is now handled by the backend, but kept for compatibility
+        let lowerText = text.lowercased()
+        
+        if lowerText.contains("excited") || lowerText.contains("amazing") || lowerText.contains("fantastic") {
+            return .excited
+        } else if lowerText.contains("happy") || lowerText.contains("great") || lowerText.contains("good") {
+            return .happy
+        } else if lowerText.contains("stressed") || lowerText.contains("anxious") || lowerText.contains("worried") {
+            return .stressed
+        } else if lowerText.contains("tired") || lowerText.contains("exhausted") || lowerText.contains("sleepy") {
+            return .tired
+        } else if lowerText.contains("focused") || lowerText.contains("determined") || lowerText.contains("productive") {
+            return .focused
+        } else if lowerText.contains("grateful") || lowerText.contains("thankful") || lowerText.contains("blessed") {
+            return .grateful
+        }
+        
+        return .neutral
+    }
+    
+    // Legacy method for backward compatibility
+    func extractTasks(from text: String) -> [TaskItem] {
+        // This is now handled by the backend, but kept for compatibility
+        return []
+    }
     
     // MARK: - Placeholder implementations for MVP
     // TODO: Replace with actual OpenAI/Claude API calls
     
     func extractTasks(from brainDump: String) async throws -> [TaskItem] {
-        // Simulate API delay
-        try await Task.sleep(nanoseconds: 1_000_000_000)
+        // Simulate AI processing time
+        try await _Concurrency.Task.sleep(nanoseconds: 1_500_000_000)
         
         // Simple task extraction for MVP - split by lines and filter for action words
         let lines = brainDump.components(separatedBy: .newlines)
@@ -38,7 +109,7 @@ class AIService: AIServiceProtocol {
     
     func generateJournalEntry(from brainDump: String, mood: Mood) async throws -> JournalEntry {
         // Simulate API delay
-        try await Task.sleep(nanoseconds: 1_500_000_000)
+        try await _Concurrency.Task.sleep(nanoseconds: 1_500_000_000)
         
         // Extract tasks first
         let tasks = try await extractTasks(from: brainDump)
@@ -58,7 +129,7 @@ class AIService: AIServiceProtocol {
     
     func improveReflection(_ reflection: String, style: WritingStyle) async throws -> String {
         // Simulate API delay
-        try await Task.sleep(nanoseconds: 800_000_000)
+        try await _Concurrency.Task.sleep(nanoseconds: 800_000_000)
         
         // Placeholder: return improved version based on style
         switch style {

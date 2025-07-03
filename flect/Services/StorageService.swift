@@ -8,12 +8,13 @@ protocol StorageServiceProtocol {
     func clearAllData()
 }
 
-class StorageService: StorageServiceProtocol {
+class StorageService: StorageServiceProtocol, ObservableObject {
     static let shared = StorageService()
     
     private let userDefaults = UserDefaults.standard
     private let journalEntriesKey = "flect_journal_entries"
     private let tasksKey = "flect_tasks"
+    private let supabaseService = SupabaseService.shared
     
     private init() {}
     
@@ -99,4 +100,6 @@ class StorageService: StorageServiceProtocol {
             TaskItem(title: "Plan weekend activities", isCompleted: true, priority: .low)
         ]
     }
+    
+
 } 

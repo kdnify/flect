@@ -25,11 +25,11 @@ struct JournalEntryCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 // Header
                 HStack {
-                    Text(entry.mood.rawValue)
+                    Text(moodEmoji(entry.mood))
                         .font(.title2)
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(entry.mood.displayName)
+                        Text(entry.mood?.capitalized ?? "Unknown")
                             .font(.headline)
                             .foregroundColor(.textMain)
                         
@@ -80,6 +80,24 @@ struct JournalEntryCard: View {
         } else {
             formatter.dateStyle = .medium
             return formatter.string(from: date)
+        }
+    }
+    
+    private func moodEmoji(_ mood: String?) -> String {
+        guard let mood = mood?.lowercased() else { return "😐" }
+        
+        switch mood {
+        case "happy", "excited", "joyful": return "😊"
+        case "sad", "down", "depressed": return "😢"
+        case "angry", "frustrated", "mad": return "😠"
+        case "stressed", "anxious", "worried": return "😰"
+        case "calm", "peaceful", "relaxed": return "😌"
+        case "focused", "concentrated": return "🎯"
+        case "tired", "exhausted": return "😴"
+        case "motivated", "energetic": return "💪"
+        case "grateful", "thankful": return "🙏"
+        case "confused", "uncertain": return "🤔"
+        default: return "😐"
         }
     }
 }
@@ -153,14 +171,16 @@ struct TaskCard: View {
     VStack(spacing: 16) {
         JournalEntryCard(
             entry: JournalEntry(
-                mood: .focused,
-                reflection: "Today was productive. I managed to organize my thoughts and tackle some important tasks. The brain dump approach really helps me see the big picture.",
-                progressNotes: "Identified key priorities and made good progress on planning.",
-                extractedTasks: [
-                    TaskItem(title: "Review quarterly goals", priority: .high),
-                    TaskItem(title: "Call mom", priority: .medium)
-                ],
-                originalBrainDump: "Sample brain dump"
+                id: UUID(),
+                date: Date(),
+                originalText: "Sample brain dump",
+                processedContent: "Today was productive. I managed to organize my thoughts and tackle some important tasks. The brain dump approach really helps me see the big picture.",
+                title: "Productive Day",
+                mood: "focused",
+                tasks: [
+                    Task(title: "Review quarterly goals", description: "", isCompleted: false, priority: .high),
+                    Task(title: "Call mom", description: "", isCompleted: false, priority: .medium)
+                ]
             )
         ) {
             print("Journal entry tapped")

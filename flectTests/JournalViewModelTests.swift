@@ -28,7 +28,13 @@ final class JournalViewModelTests: XCTestCase {
         // Given
         let brainDump = "Test brain dump content"
         let mood = Mood.focused
-        let expectedEntry = JournalEntry(mood: mood, reflection: "Test reflection", originalBrainDump: brainDump)
+        let expectedEntry = JournalEntry(
+            originalText: brainDump,
+            processedContent: "Test reflection",
+            title: "Test Entry",
+            mood: mood.rawValue,
+            tasks: []
+        )
         mockAIService.mockJournalEntry = expectedEntry
         
         // When
@@ -37,8 +43,8 @@ final class JournalViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isProcessing)
         XCTAssertEqual(viewModel.journalEntries.count, 1)
-        XCTAssertEqual(viewModel.journalEntries.first?.originalBrainDump, brainDump)
-        XCTAssertEqual(viewModel.journalEntries.first?.mood, mood)
+        XCTAssertEqual(viewModel.journalEntries.first?.originalText, brainDump)
+        XCTAssertEqual(viewModel.journalEntries.first?.mood, mood.rawValue)
         XCTAssertNil(viewModel.errorMessage)
     }
     
@@ -57,16 +63,22 @@ final class JournalViewModelTests: XCTestCase {
     
     func testUpdateJournalEntry() {
         // Given
-        let entry = JournalEntry(mood: .happy, reflection: "Original")
+        let entry = JournalEntry(
+            originalText: "Original",
+            processedContent: "Original reflection",
+            title: "Original Title",
+            mood: "happy",
+            tasks: []
+        )
         viewModel.journalEntries = [entry]
         
         // When
         var updatedEntry = entry
-        updatedEntry.reflection = "Updated reflection"
+        updatedEntry.processedContent = "Updated reflection"
         viewModel.updateJournalEntry(updatedEntry)
         
         // Then
-        XCTAssertEqual(viewModel.journalEntries.first?.reflection, "Updated reflection")
+        XCTAssertEqual(viewModel.journalEntries.first?.processedContent, "Updated reflection")
     }
     
     func testDeleteJournalEntry() {
@@ -83,13 +95,13 @@ final class JournalViewModelTests: XCTestCase {
     
     // MARK: - Task Management Tests
     
-    func testToggleTaskCompletion() {
+    func testToggleTaskCompletion() async {
         // Given
-        let task = TaskItem(title: "Test task")
+        let task = TaskModel(title: "Test task")
         viewModel.tasks = [task]
         
         // When
-        viewModel.toggleTaskCompletion(task)
+        await viewModel.toggleTaskCompletion(task)
         
         // Then
         XCTAssertTrue(viewModel.tasks.first?.isCompleted ?? false)
@@ -97,7 +109,7 @@ final class JournalViewModelTests: XCTestCase {
     
     func testAddTaskItem() {
         // Given
-        let task = TaskItem(title: "New task")
+        let task = TaskModel(title: "New task")
         
         // When
         viewModel.addTaskItem(task)
@@ -109,7 +121,7 @@ final class JournalViewModelTests: XCTestCase {
     
     func testDeleteTaskItem() {
         // Given
-        let task = TaskItem(title: "Task to delete")
+        let task = TaskModel(title: "Task to delete")
         viewModel.tasks = [task]
         
         // When
@@ -123,8 +135,8 @@ final class JournalViewModelTests: XCTestCase {
     
     func testPendingTasks() {
         // Given
-        let completedTask = TaskItem(title: "Completed", isCompleted: true)
-        let pendingTask = TaskItem(title: "Pending", isCompleted: false)
+        let completedTask = TaskModel(title: "Completed", isCompleted: true)
+        let pendingTask = TaskModel(title: "Pending", isCompleted: false)
         viewModel.tasks = [completedTask, pendingTask]
         
         // When
@@ -137,8 +149,8 @@ final class JournalViewModelTests: XCTestCase {
     
     func testCompletedTasks() {
         // Given
-        let completedTask = TaskItem(title: "Completed", isCompleted: true)
-        let pendingTask = TaskItem(title: "Pending", isCompleted: false)
+        let completedTask = TaskModel(title: "Completed", isCompleted: true)
+        let pendingTask = TaskModel(title: "Pending", isCompleted: false)
         viewModel.tasks = [completedTask, pendingTask]
         
         // When
@@ -154,8 +166,22 @@ final class JournalViewModelTests: XCTestCase {
         let today = Date()
         let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: today)!
         
-        let todaysEntry = JournalEntry(date: today, mood: .happy)
-        let yesterdaysEntry = JournalEntry(date: yesterday, mood: .neutral)
+        let todaysEntry = JournalEntry(
+            date: today,
+            originalText: "Today's entry",
+            processedContent: "Today's reflection",
+            title: "Today",
+            mood: "happy",
+            tasks: []
+        )
+        let yesterdaysEntry = JournalEntry(
+            date: yesterday,
+            originalText: "Yesterday's entry",
+            processedContent: "Yesterday's reflection",
+            title: "Yesterday",
+            mood: "neutral",
+            tasks: []
+        )
         
         viewModel.journalEntries = [todaysEntry, yesterdaysEntry]
         
@@ -164,7 +190,7 @@ final class JournalViewModelTests: XCTestCase {
         
         // Then
         XCTAssertNotNil(todayEntry)
-        XCTAssertEqual(todayEntry?.mood, .happy)
+        XCTAssertEqual(todayEntry?.mood, "happy")
     }
 }
 
@@ -173,9 +199,9 @@ final class JournalViewModelTests: XCTestCase {
 class MockAIService: AIServiceProtocol {
     var shouldThrowError = false
     var mockJournalEntry: JournalEntry?
-    var mockTasks: [TaskItem] = []
+    var mockTasks: [TaskModel] = []
     
-    func extractTasks(from brainDump: String) async throws -> [TaskItem] {
+    func extractTasks(from brainDump: String) async throws -> [TaskModel] {
         if shouldThrowError {
             throw NSError(domain: "TestError", code: 1, userInfo: nil)
         }
@@ -186,7 +212,13 @@ class MockAIService: AIServiceProtocol {
         if shouldThrowError {
             throw NSError(domain: "TestError", code: 1, userInfo: nil)
         }
-        return mockJournalEntry ?? JournalEntry(mood: mood, originalBrainDump: brainDump)
+        return mockJournalEntry ?? JournalEntry(
+            originalText: brainDump,
+            processedContent: "Generated reflection",
+            title: "Generated Entry",
+            mood: mood.rawValue,
+            tasks: []
+        )
     }
     
     func improveReflection(_ reflection: String, style: WritingStyle) async throws -> String {
@@ -199,7 +231,7 @@ class MockAIService: AIServiceProtocol {
 
 class MockStorageService: StorageServiceProtocol {
     var savedJournalEntries: [JournalEntry] = []
-    var savedTasks: [TaskItem] = []
+    var savedTasks: [TaskModel] = []
     
     func saveJournalEntries(_ entries: [JournalEntry]) {
         savedJournalEntries = entries
@@ -209,11 +241,11 @@ class MockStorageService: StorageServiceProtocol {
         return savedJournalEntries
     }
     
-    func saveTasks(_ tasks: [TaskItem]) {
+    func saveTasks(_ tasks: [TaskModel]) {
         savedTasks = tasks
     }
     
-    func loadTasks() -> [TaskItem] {
+    func loadTasks() -> [TaskModel] {
         return savedTasks
     }
     

@@ -48,6 +48,7 @@
 		AFE8F0492E15DF8400AED8CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFE8F0192E15DF8400AED8CC /* Assets.xcassets */; };
 		AFE8F04C2E15DF8400AED8CC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F01A2E15DF8400AED8CC /* ContentView.swift */; };
 		AFE8F04D2E15DF8400AED8CC /* flectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F01B2E15DF8400AED8CC /* flectApp.swift */; };
+		AFE8F0552E15DF8400AED8CC /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F0542E15DF8400AED8CC /* SupabaseService.swift */; };
 		AFE8F0562E15DF8400AED8CC /* flectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F01F2E15DF8400AED8CC /* flectTests.swift */; };
 		AFE8F0572E15DF8400AED8CC /* flectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F01F2E15DF8400AED8CC /* flectTests.swift */; };
 		AFE8F0582E15DF8400AED8CC /* flectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F01F2E15DF8400AED8CC /* flectTests.swift */; };
@@ -89,6 +90,7 @@
 		AFE8F00B2E15DF8400AED8CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AFE8F00D2E15DF8400AED8CC /* AIService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
 		AFE8F00E2E15DF8400AED8CC /* StorageService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		AFE8F0542E15DF8400AED8CC /* SupabaseService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		AFE8F0102E15DF8400AED8CC /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		AFE8F0122E15DF8400AED8CC /* JournalViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JournalViewModel.swift; sourceTree = "<group>"; };
 		AFE8F0142E15DF8400AED8CC /* BrainDumpView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrainDumpView.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 			children = (
 				AFE8F00D2E15DF8400AED8CC /* AIService.swift */,
 				AFE8F00E2E15DF8400AED8CC /* StorageService.swift */,
+				AFE8F0542E15DF8400AED8CC /* SupabaseService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -264,6 +267,9 @@
 			dependencies = (
 			);
 			name = flect;
+			packageProductDependencies = (
+				AF5E43512E15C05000F1D345 /* Supabase */,
+			);
 			productName = flect;
 			productReference = AF5E43272E15C04C00F1D345 /* flect.app */;
 			productType = "com.apple.product-type.application";
@@ -336,6 +342,9 @@
 				Base,
 			);
 			mainGroup = AF5E431E2E15C04C00F1D345;
+			packageReferences = (
+				AF5E43502E15C05000F1D345 /* XCRemoteSwiftPackageReference "supabase-swift" */,
+			);
 			productRefGroup = AF5E43282E15C04C00F1D345 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -390,6 +399,7 @@
 				AFE8F04D2E15DF8400AED8CC /* flectApp.swift in Sources */,
 				AFE8F0262E15DF8400AED8CC /* PrimaryButton.swift in Sources */,
 				AFE8F0352E15DF8400AED8CC /* StorageService.swift in Sources */,
+				AFE8F0552E15DF8400AED8CC /* SupabaseService.swift in Sources */,
 				AFE8F03E2E15DF8400AED8CC /* BrainDumpView.swift in Sources */,
 				AFE8F0412E15DF8400AED8CC /* HomeView.swift in Sources */,
 				AFE8F0472E15DF8400AED8CC /* JournalListView.swift in Sources */,
@@ -727,6 +737,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AF5E43502E15C05000F1D345 /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AF5E43512E15C05000F1D345 /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AF5E43502E15C05000F1D345 /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AF5E431F2E15C04C00F1D345 /* Project object */;
 }

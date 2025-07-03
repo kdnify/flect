@@ -63,11 +63,11 @@ struct JournalDetailView: View {
             // Date and mood
             CardView {
                 HStack {
-                    Text(entry.mood.rawValue)
+                    Text(moodEmoji(entry.mood))
                         .font(.largeTitle)
                     
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(entry.mood.displayName)
+                        Text(entry.mood?.capitalized ?? "Unknown")
                             .font(.title2)
                             .fontWeight(.semibold)
                             .foregroundColor(.textMain)
@@ -250,20 +250,41 @@ struct JournalDetailView: View {
         formatter.timeStyle = .short
         return formatter.string(from: date)
     }
+    
+    private func moodEmoji(_ mood: String?) -> String {
+        guard let mood = mood?.lowercased() else { return "❓" }
+        
+        switch mood {
+        case "focused": return "🧠"
+        case "relaxed": return "🌴"
+        case "stressed": return "😰"
+        case "anxious": return "🤔"
+        case "excited": return "🤩"
+        case "happy": return "😄"
+        case "sad": return "🥺"
+        case "angry": return "😠"
+        case "neutral": return "😐"
+        case "calm": return "😌"
+        case "motivated": return "💪"
+        default: return "😐"
+        }
+    }
 }
 
 #Preview {
     JournalDetailView(
         entry: JournalEntry(
-            mood: .focused,
-            reflection: "Today was productive and I managed to organize my thoughts effectively. The brain dump approach really helps me see the big picture and identify what's most important. I'm feeling more clarity about my priorities and next steps.",
-            progressNotes: "Successfully identified key priorities and made good progress on planning. The act of writing everything down helped me realize I was overthinking some tasks that are actually quite manageable.",
-            extractedTasks: [
-                TaskItem(title: "Review quarterly goals and adjust timeline", priority: .high),
-                TaskItem(title: "Call mom and catch up", priority: .medium),
-                TaskItem(title: "Plan weekend activities", isCompleted: true, priority: .low)
-            ],
-            originalBrainDump: "Need to review quarterly goals and make sure I'm on track. Feeling a bit overwhelmed with the timeline but maybe it's not as bad as I think. Also should call mom, haven't talked to her in a while. Might be nice to plan something fun for the weekend too. Actually feeling pretty focused today and want to make progress on key projects."
+            id: UUID(),
+            date: Date(),
+            originalText: "Today was productive and I managed to organize my thoughts effectively...",
+            processedContent: "Today was productive and I managed to organize my thoughts effectively. The brain dump approach really helps me see the big picture and identify what's most important. I'm feeling more clarity about my priorities and next steps.",
+            title: "Productive Day",
+            mood: "focused",
+            tasks: [
+                TaskModel(title: "Review quarterly goals and adjust timeline", priority: .high),
+                TaskModel(title: "Call mom and catch up", priority: .medium),
+                TaskModel(title: "Plan weekend activities", isCompleted: true, priority: .low)
+            ]
         )
     )
 } 

@@ -2,7 +2,7 @@ import SwiftUI
 
 struct BrainDumpView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = JournalViewModel()
+    @ObservedObject var viewModel: JournalViewModel
     
     @State private var brainDumpText = ""
     @State private var selectedMood: Mood = .neutral
@@ -43,6 +43,9 @@ struct BrainDumpView: View {
             if viewModel.isProcessing {
                 processingOverlay
             }
+        }
+        .onDisappear {
+            viewModel.loadData()
         }
     }
     
@@ -245,8 +248,8 @@ struct BrainDumpView: View {
     }
     
     private func processEntryAction() {
-        Task {
-            await viewModel.createJournalEntry(from: brainDumpText, mood: selectedMood)
+        _Concurrency.Task {
+            await viewModel.processBrainDump(brainDumpText, mood: selectedMood.name)
             
             if viewModel.errorMessage == nil {
                 dismiss()
@@ -256,5 +259,5 @@ struct BrainDumpView: View {
 }
 
 #Preview {
-    BrainDumpView()
+    BrainDumpView(viewModel: JournalViewModel())
 } 

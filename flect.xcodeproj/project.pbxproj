@@ -10,7 +10,7 @@
 		16F73594DF86B1FDB9465A86 /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ABA8C672F7EFFD1DC45B042 /* GoalService.swift */; };
 		1DB30A111875508D8275F5B2 /* MorningInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE862E208470006165FA /* MorningInsightsView.swift */; };
 		230B20828B259C8F24FACE16 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BB142738BDD51A22AF1EAE /* HapticManager.swift */; };
-		3B34AAAB4F34087181BF1E6C /* DaylioHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */; };
+		3B34AAAB4F34087181BF1E6C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* HomeView.swift */; };
 		3D50A43CC5C4121887CCF87D /* EnhancedGoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */; };
 		50A17AC52853E45F1686CA24 /* UserPreferencesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61959A7F04534470F60A6A0C /* UserPreferencesService.swift */; };
 		5A7CE3977AFB379A2F329B45 /* DevTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8399C3B3036C0CB60F9BB2 /* DevTools.swift */; };
@@ -49,7 +49,7 @@
 		DECBAE602E20631E006165FA /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */; };
 		DECBAE612E20631E006165FA /* DaylioCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */; };
 		DECBAE622E20631E006165FA /* MoodChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */; };
-		DECBAE632E20631E006165FA /* DaylioHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */; };
+		DECBAE632E20631E006165FA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* HomeView.swift */; };
 		DECBAE642E20631E006165FA /* CheckInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D415485D66649F54B994A /* CheckInService.swift */; };
 		DECBAE652E20631E006165FA /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F0102E15DF8400AED8CC /* Colors.swift */; };
 		DECBAE662E20631E006165FA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F01A2E15DF8400AED8CC /* ContentView.swift */; };
@@ -64,7 +64,7 @@
 		DECBAE6F2E20631E006165FA /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */; };
 		DECBAE702E20631E006165FA /* DaylioCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */; };
 		DECBAE712E20631E006165FA /* MoodChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */; };
-		DECBAE722E20631E006165FA /* DaylioHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */; };
+		DECBAE722E20631E006165FA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* HomeView.swift */; };
 		DECBAE732E20631E006165FA /* CheckInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D415485D66649F54B994A /* CheckInService.swift */; };
 		DECBAE752E206AC1006165FA /* (null) in Sources */ = {isa = PBXBuildFile; };
 		DECBAE762E206AC1006165FA /* (null) in Sources */ = {isa = PBXBuildFile; };
@@ -137,7 +137,7 @@
 		AFE8F01F2E15DF8400AED8CC /* flectTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = flectTests.swift; sourceTree = "<group>"; };
 		B71069879E06A6EEA3753154 /* OnboardingFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingFlow.swift; path = flect/Views/OnboardingFlow.swift; sourceTree = SOURCE_ROOT; };
 		BA32DBE16549416D678A5058 /* Goals.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Goals.swift; path = flect/Models/Goals.swift; sourceTree = "<group>"; };
-		C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DaylioHomeView.swift; sourceTree = "<group>"; };
+		C143B1AC6B4B71C0285A2C78 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C22D415485D66649F54B994A /* CheckInService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckInService.swift; sourceTree = "<group>"; };
 		CF89FA407027FAC0DB6991D3 /* InsightCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsightCard.swift; sourceTree = "<group>"; };
 		DE5A23D42E1D93650057C770 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -276,7 +276,7 @@
 				44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */,
 				0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */,
 				2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */,
-				C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */,
+				C143B1AC6B4B71C0285A2C78 /* HomeView.swift */,
 				EBEAC99620A771B7C6F76E5F /* AIChatView.swift */,
 				034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */,
 				4D2E001531F4C959114D492E /* WelcomeView.swift */,
@@ -460,7 +460,7 @@
 				67CDB5065C59DF8D5D8FEE22 /* LaunchScreen.swift in Sources */,
 				640B99EBC320B4FD050A488B /* DaylioCheckInView.swift in Sources */,
 				D88D99E34FD1A073AC977EF3 /* MoodChartView.swift in Sources */,
-				3B34AAAB4F34087181BF1E6C /* DaylioHomeView.swift in Sources */,
+				3B34AAAB4F34087181BF1E6C /* HomeView.swift in Sources */,
 				A06324E1E83262E6CA381503 /* PersonalDashboard.swift in Sources */,
 				D2B4D6BA8A025846EB5227CE /* Goals.swift in Sources */,
 				16F73594DF86B1FDB9465A86 /* GoalService.swift in Sources */,
@@ -508,7 +508,7 @@
 				DECBAE612E20631E006165FA /* DaylioCheckInView.swift in Sources */,
 				DECBAE752E206AC1006165FA /* (null) in Sources */,
 				DECBAE622E20631E006165FA /* MoodChartView.swift in Sources */,
-				DECBAE632E20631E006165FA /* DaylioHomeView.swift in Sources */,
+				DECBAE632E20631E006165FA /* HomeView.swift in Sources */,
 				DECBAE642E20631E006165FA /* CheckInService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -538,7 +538,7 @@
 				DECBAE702E20631E006165FA /* DaylioCheckInView.swift in Sources */,
 				DECBAE762E206AC1006165FA /* (null) in Sources */,
 				DECBAE712E20631E006165FA /* MoodChartView.swift in Sources */,
-				DECBAE722E20631E006165FA /* DaylioHomeView.swift in Sources */,
+				DECBAE722E20631E006165FA /* HomeView.swift in Sources */,
 				DECBAE732E20631E006165FA /* CheckInService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

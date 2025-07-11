@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct DaylioHomeView: View {
+struct HomeView: View {
     @StateObject private var checkInService = CheckInService.shared
     @StateObject private var goalService = GoalService.shared
     @EnvironmentObject var userPreferences: UserPreferencesService
@@ -30,8 +30,14 @@ struct DaylioHomeView: View {
                             // Today's mood section
                             todaysMoodSection
                             
+                            // Yesterday Reflection Section
+                            yesterdayReflectionSection
+                            
                             // Weekly overview
                             weeklyOverviewSection
+                            
+                            // Tomorrow Preparation Section
+                            tomorrowPreparationSection
                             
                             // Quick stats
                             quickStatsSection
@@ -328,6 +334,57 @@ struct DaylioHomeView: View {
         }
     }
     
+    // MARK: - Yesterday Reflection Section
+    
+    private var yesterdayReflectionSection: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            if let yesterdayCheckIn = getYesterdayCheckIn() {
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack {
+                        Text("Yesterday")
+                            .font(.system(size: 24, weight: .light))
+                            .foregroundColor(.textMainHex)
+                        
+                        Spacer()
+                        
+                        Circle()
+                            .fill(Color.moodColor(for: yesterdayCheckIn.moodEmoji))
+                            .frame(width: 20, height: 20)
+                            .shadow(color: Color.moodColor(for: yesterdayCheckIn.moodEmoji).opacity(0.2), radius: 4, x: 0, y: 2)
+                    }
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        if !yesterdayCheckIn.happyThing.isEmpty {
+                            Text("You highlighted: \"\(yesterdayCheckIn.happyThing)\"")
+                                .font(.body)
+                                .foregroundColor(.textMainHex)
+                                .italic()
+                        }
+                        
+                        Text(generateYesterdayReflectionPrompt(for: yesterdayCheckIn))
+                            .font(.subheadline)
+                            .foregroundColor(.mediumGreyHex)
+                        
+                        Button(action: { showingCheckIn = true }) {
+                            Text("Reflect on yesterday")
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundColor(.accentHex)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 16)
+                                .background(Color.accentHex.opacity(0.1))
+                                .cornerRadius(20)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                    }
+                    .padding(20)
+                    .background(Color.cardBackgroundHex)
+                    .cornerRadius(16)
+                    .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+                }
+            }
+        }
+    }
+    
     // MARK: - Weekly Overview Section
     
     private var weeklyOverviewSection: some View {
@@ -400,6 +457,61 @@ struct DaylioHomeView: View {
                 }
                 .padding(.vertical, 16)
             }
+        }
+    }
+    
+    // MARK: - Tomorrow Preparation Section
+    
+    private var tomorrowPreparationSection: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            HStack {
+                Text("Tomorrow")
+                    .font(.system(size: 24, weight: .light))
+                    .foregroundColor(.textMainHex)
+                
+                Spacer()
+                
+                Image(systemName: "arrow.forward.circle.fill")
+                    .font(.title2)
+                    .foregroundColor(.accentHex)
+            }
+            
+            VStack(alignment: .leading, spacing: 16) {
+                Text(generateTomorrowPrompt())
+                    .font(.body)
+                    .foregroundColor(.textMainHex)
+                
+                Text(getTomorrowInsight())
+                    .font(.subheadline)
+                    .foregroundColor(.mediumGreyHex)
+                    .italic()
+                
+                HStack {
+                    Button(action: { showingCheckIn = true }) {
+                        Text("Set tomorrow's intention")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.white)
+                            .padding(.vertical, 12)
+                            .padding(.horizontal, 20)
+                            .background(
+                                LinearGradient(
+                                    colors: [Color.green.opacity(0.8), Color.blue.opacity(0.8)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .cornerRadius(25)
+                            .shadow(color: .green.opacity(0.12), radius: 6, x: 0, y: 2)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    Spacer()
+                }
+            }
+            .padding(20)
+            .background(Color.cardBackgroundHex)
+            .cornerRadius(16)
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
         }
     }
     
@@ -617,6 +729,97 @@ struct DaylioHomeView: View {
         default: return 3
         }
     }
+    
+    private func getYesterdayCheckIn() -> DailyCheckIn? {
+        let calendar = Calendar.current
+        let yesterday = calendar.date(byAdding: .day, value: -1, to: Date())!
+        return checkInService.checkIns.first { calendar.isDate($0.date, inSameDayAs: yesterday) }
+    }
+    
+    private func generateYesterdayReflectionPrompt(for checkIn: DailyCheckIn) -> String {
+        let moodValue = self.moodValue(from: checkIn.moodEmoji)
+        let happyThing = checkIn.happyThing.lowercased()
+        
+        switch moodValue {
+        case 1, 2: // Rough/Bad
+            if happyThing.contains("work") {
+                return "That work day sounds tough. Did you find any small wins? What would help today feel lighter?"
+            } else if happyThing.contains("exercise") || happyThing.contains("workout") {
+                return "Even on hard days, you moved your body. How did that feel? Did it help at all?"
+            } else {
+                return "Yesterday was challenging. What's one thing that went better than expected?"
+            }
+        case 3: // Neutral
+            return "Yesterday felt okay. What could tip today toward 'good'? Any small changes you want to try?"
+        case 4, 5: // Good/Great
+            if happyThing.contains("work") {
+                return "That sounds like a solid work day! What made it click? Can you recreate that energy today?"
+            } else if happyThing.contains("friend") || happyThing.contains("social") {
+                return "Time with people lifted you up. Who brings out your best? Any plans to connect again soon?"
+            } else if happyThing.contains("exercise") || happyThing.contains("workout") {
+                return "You felt great after moving! Your body loves that. What's your movement plan for today?"
+            } else {
+                return "You had a good day! What made the difference? How can you carry that momentum forward?"
+            }
+        default:
+            return "How are you feeling about yesterday now? Any insights looking back?"
+        }
+    }
+    
+    private func generateTomorrowPrompt() -> String {
+        // Use today's mood if available, otherwise look at recent patterns
+        let todayMoodValue = todaysCheckIn != nil ? moodValue(from: todaysCheckIn!.moodEmoji) : 3
+        let todayHappy = todaysCheckIn?.happyThing.lowercased() ?? ""
+        
+        // Get recent mood trend
+        let recentMoodAverage = recentCheckIns.isEmpty ? 3 : recentCheckIns.map { moodValue(from: $0.moodEmoji) }.reduce(0, +) / recentCheckIns.count
+        
+        switch todayMoodValue {
+        case 4, 5: // Good/Great day today
+            if todayHappy.contains("work") {
+                return "That work flow was solid! What's one thing you can do tomorrow to keep that energy?"
+            } else if todayHappy.contains("friend") || todayHappy.contains("social") {
+                return "Time with people lifted you up! Who could you connect with tomorrow?"
+            } else if todayHappy.contains("exercise") || todayHappy.contains("workout") {
+                return "You felt amazing after moving! What's your movement plan for tomorrow?"
+            } else {
+                return "You're on a roll! What's one intention that will keep this momentum going?"
+            }
+        case 3: // Neutral day
+            if recentMoodAverage >= 4 {
+                return "You've been doing well lately! What small thing could make tomorrow feel more alive?"
+            } else {
+                return "What's one thing you're looking forward to tomorrow? Even something small counts."
+            }
+        case 1, 2: // Tough day today
+            if recentMoodAverage >= 3 {
+                return "Tomorrow's a fresh start. What's one gentle thing you can do for yourself?"
+            } else {
+                return "You're being so strong. What's one tiny step that could make tomorrow feel lighter?"
+            }
+        default:
+            return "What's one intention you want to set for tomorrow? Trust yourself."
+        }
+    }
+    
+    private func getTomorrowInsight() -> String {
+        let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
+        let dayNumber = Calendar.current.component(.day, from: tomorrow)
+        
+        // Simple pattern-based insights
+        let insights = [
+            "Small actions create big changes over time.",
+            "Tomorrow is a blank canvas. Paint it with intention.",
+            "You're building something beautiful, one day at a time.",
+            "Your future self will thank you for today's choices.",
+            "Progress isn't always visible, but it's always happening.",
+            "Tomorrow's potential is limitless when you show up."
+        ]
+        
+        // Return a consistent insight based on the day to create familiarity
+        let index = dayNumber % insights.count
+        return insights[index]
+    }
 }
 
 // MARK: - Minimal Stat Card Component
@@ -721,5 +924,5 @@ struct GoalProgressCard: View {
 }
 
 #Preview {
-    DaylioHomeView()
+    HomeView()
 } 

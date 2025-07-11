@@ -21,7 +21,7 @@ struct ContentView: View {
         ZStack {
             if userPreferences.hasCompletedOnboarding {
                 NavigationView {
-                    DaylioHomeView()
+                    HomeView()
                         .navigationBarHidden(true)
                 }
                 .environmentObject(checkInService)

@@ -90,9 +90,14 @@ struct HistoryView: View {
                     ForEach(filteredCheckIns.suffix(7).indices, id: \.self) { index in
                         let checkIn = filteredCheckIns.suffix(7)[index]
                         VStack(spacing: 4) {
-                            Text(checkIn.moodEmoji)
-                                .font(.title2)
-                            
+                            Circle()
+                                .fill(Color.moodColor(for: checkIn.moodEmoji))
+                                .frame(width: 24, height: 24)
+                                .shadow(color: Color.moodColor(for: checkIn.moodEmoji).opacity(0.15), radius: 4, x: 0, y: 1)
+                                .overlay(
+                                    Circle().stroke(Color.borderColorHex, lineWidth: 1)
+                                )
+                                .accessibilityLabel("Mood: \(checkIn.moodEmoji)")
                             Text(dayOfWeek(checkIn.date))
                                 .font(.caption2)
                                 .foregroundColor(.mediumGreyHex)
@@ -198,22 +203,21 @@ struct CheckInHistoryCard: View {
             VStack(alignment: .leading, spacing: 12) {
                 // Header
                 HStack {
-                    Text(checkIn.moodEmoji)
-                        .font(.title2)
-                    
+                    Circle()
+                        .fill(Color.moodColor(for: checkIn.moodEmoji))
+                        .frame(width: 32, height: 32)
+                        .shadow(color: Color.moodColor(for: checkIn.moodEmoji).opacity(0.15), radius: 6, x: 0, y: 2)
+                        .overlay(
+                            Circle().stroke(Color.borderColorHex, lineWidth: 1)
+                        )
+                        .accessibilityLabel("Mood: \(checkIn.moodEmoji)")
                     VStack(alignment: .leading, spacing: 2) {
                         Text(formatDate(checkIn.date))
                             .font(.subheadline)
                             .fontWeight(.medium)
                             .foregroundColor(.textMainHex)
-                        
-                        Text("Mood: \(String(format: "%.0f", moodScore(from: checkIn.moodEmoji) * 100))%")
-                            .font(.caption)
-                            .foregroundColor(.mediumGreyHex)
                     }
-                    
                     Spacer()
-                    
                     Button(action: {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             isExpanded.toggle()

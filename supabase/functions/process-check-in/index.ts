@@ -16,11 +16,25 @@ serve(async (req) => {
 
   try {
     console.log('📖 Parsing check-in request...')
-    const { happyThing, improveThing, userHistory } = await req.json()
+    const { 
+      happyThing, 
+      improveThing, 
+      userHistory,
+      energy,
+      sleep,
+      social,
+      highlight,
+      wellbeingScore
+    } = await req.json()
     
     console.log('📝 Happy thing:', happyThing?.substring(0, 50) + '...')
     console.log('📝 Improve thing:', improveThing?.substring(0, 50) + '...')
     console.log('📚 User history entries:', userHistory?.length || 0)
+    console.log('⚡ Energy:', energy)
+    console.log('😴 Sleep:', sleep)
+    console.log('👥 Social:', social)
+    console.log('✨ Highlight:', highlight)
+    console.log('📊 Wellbeing Score:', wellbeingScore)
     
     if (!happyThing || !improveThing) {
       throw new Error('Both happyThing and improveThing are required')
@@ -31,7 +45,7 @@ serve(async (req) => {
     // Build context from user history
     const historyContext = userHistory && userHistory.length > 0 
       ? `Previous check-ins for context:\n${userHistory.map((entry: any, idx: number) => 
-          `${idx + 1}. Happy: "${entry.happyThing}" | Improve: "${entry.improveThing}"`
+          `${idx + 1}. Happy: "${entry.happyThing}" | Improve: "${entry.improveThing}" | Energy: ${entry.energy} | Sleep: ${entry.sleep} | Social: ${entry.social} | Highlight: ${entry.highlight}`
         ).join('\n')}\n\n`
       : 'This appears to be a new user with no previous check-ins.\n\n'
 
@@ -50,11 +64,12 @@ serve(async (req) => {
             content: `You are an intelligent personal companion that analyzes daily check-ins to provide insights and ask thoughtful follow-up questions.
 
 Your job is to:
-1. Analyze the user's happiness and improvement responses
+1. Analyze the user's complete check-in data (mood, energy, sleep, social, highlight)
 2. Look for patterns in their history (if available)
 3. Generate a thoughtful, personalized follow-up question for tomorrow
 4. Identify any behavioral patterns or themes
 5. Provide gentle encouragement and insights
+6. Consider wellbeing score trends
 
 Guidelines for follow-up questions:
 - Week 1 users: Ask simple, encouraging questions about their responses
@@ -63,6 +78,7 @@ Guidelines for follow-up questions:
 - Make questions personal and specific to their responses
 - Keep questions positive and forward-looking
 - Avoid being pushy or clinical
+- Consider all aspects: mood, energy, sleep, social, activities
 
 Response format (JSON):
 {
@@ -77,7 +93,8 @@ Response format (JSON):
   ],
   "themes": {
     "happiness": ["theme1", "theme2"],
-    "improvement": ["theme1", "theme2"]
+    "improvement": ["theme1", "theme2"],
+    "wellbeing": ["theme1", "theme2"]
   },
   "engagementLevel": "new|developing|engaged|dedicated"
 }`
@@ -87,6 +104,11 @@ Response format (JSON):
             content: `${historyContext}Today's check-in:
 Happy thing: "${happyThing}"
 Thing to improve: "${improveThing}"
+Energy Level: ${energy === 0 ? "Low" : energy === 1 ? "Medium" : "High"}
+Sleep Quality: ${sleep === 0 ? "Bad" : sleep === 1 ? "Okay" : "Great"}
+Social Interaction: ${social === 0 ? "Alone" : social === 1 ? "Some" : "With Others"}
+Day's Highlight: "${highlight}"
+Wellbeing Score: ${wellbeingScore}
 
 Please analyze this check-in and provide insights with a thoughtful follow-up question.`
           }

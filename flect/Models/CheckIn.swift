@@ -7,7 +7,7 @@ struct DailyCheckIn: Identifiable, Codable {
     let date: Date
     let happyThing: String
     let improveThing: String
-    let moodEmoji: String
+    let moodName: String // Only mood names supported
     let completionState: CheckInState
     let aiResponse: String?
     let aiQuestionAsked: String?
@@ -15,37 +15,50 @@ struct DailyCheckIn: Identifiable, Codable {
     let createdAt: Date
     var updatedAt: Date
     
+    // New fields for multi-step check-in
+    let energy: Int? // 0=Low, 1=Medium, 2=High
+    let sleep: Int? // 0=Bad, 1=Okay, 2=Great
+    let social: Int? // 0=Alone, 1=Some, 2=With Others
+    let highlight: String? // Activity tag that was the highlight
+    let wellbeingScore: Int? // Calculated score from multi-step data
+    
     init(
         id: UUID = UUID(),
-        date: Date = Date(),
+        date: Date, // REQUIRED: Always pass the simulated date (now) from CheckInService
         happyThing: String,
         improveThing: String,
-        moodEmoji: String = "😌",
+        moodName: String = "Neutral",
         completionState: CheckInState = .completed,
         aiResponse: String? = nil,
         aiQuestionAsked: String? = nil,
-        followUpCompleted: Bool = false
+        followUpCompleted: Bool = false,
+        energy: Int? = nil,
+        sleep: Int? = nil,
+        social: Int? = nil,
+        highlight: String? = nil,
+        wellbeingScore: Int? = nil
     ) {
         self.id = id
         self.date = date
         self.happyThing = happyThing
         self.improveThing = improveThing
-        self.moodEmoji = moodEmoji
+        self.moodName = moodName
         self.completionState = completionState
         self.aiResponse = aiResponse
         self.aiQuestionAsked = aiQuestionAsked
         self.followUpCompleted = followUpCompleted
         self.createdAt = Date()
         self.updatedAt = Date()
+        self.energy = energy
+        self.sleep = sleep
+        self.social = social
+        self.highlight = highlight
+        self.wellbeingScore = wellbeingScore
     }
     
     // Helper properties
     var daysSinceCreation: Int {
         Calendar.current.dateComponents([.day], from: createdAt, to: Date()).day ?? 0
-    }
-    
-    var isToday: Bool {
-        Calendar.current.isDate(date, inSameDayAs: Date())
     }
     
     var hasAIResponse: Bool {

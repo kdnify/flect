@@ -15,6 +15,9 @@ struct GoalOnboardingView: View {
     private let totalSteps = 4
     // Animation state for logo
     @State private var logoPulse = false
+    
+    // Completion handler for onboarding flow
+    var onGoalCreated: (() -> Void)?
 
     var body: some View {
         ZStack {
@@ -47,6 +50,8 @@ struct GoalOnboardingView: View {
         .sheet(isPresented: $showingSuccess) {
             GoalSuccessView {
                 goalService.markUserAsOnboarded()
+                // Complete the onboarding flow
+                onGoalCreated?()
                 dismiss()
             }
         }

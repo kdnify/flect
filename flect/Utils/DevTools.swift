@@ -1,6 +1,59 @@
+import Foundation
 import SwiftUI
 
 struct DevTools {
+    static let shared = DevTools()
+    private let moods = ["Rough", "Okay", "Neutral", "Good", "Great"]
+    #if DEBUG
+    static var currentAppDate: Date? = nil
+    #endif
+    
+    /// Advances the app's current date by one day (does NOT create a check-in).
+    @MainActor
+    func skipDayAhead() {
+        #if DEBUG
+        let calendar = Calendar.current
+        let today = DevTools.currentAppDate ?? calendar.startOfDay(for: Date())
+        let nextDay = calendar.date(byAdding: .day, value: 1, to: today) ?? today
+        DevTools.currentAppDate = nextDay
+        #endif
+    }
+    
+    /// Creates a check-in for the current simulated day (start of day).
+    @MainActor
+    func addDevCheckInForToday() {
+        #if DEBUG
+        let calendar = Calendar.current
+        let today = DevTools.currentAppDate ?? calendar.startOfDay(for: Date())
+        let checkInService = CheckInService.shared
+        let mood = moods[(checkInService.checkIns.count) % moods.count]
+        let happyThing = "DevTools happy thing for \(mood)"
+        let improveThing = "DevTools improve thing for \(mood)"
+        let checkIn = DailyCheckIn(
+            date: calendar.startOfDay(for: today),
+            happyThing: happyThing,
+            improveThing: improveThing,
+            moodName: mood,
+            completionState: .completed
+        )
+        checkInService.saveCheckIn(checkIn)
+        #endif
+    }
+    
+    /// Deletes the check-in for the current simulated day (if any).
+    @MainActor
+    static func deleteTodayCheckIn() async {
+        #if DEBUG
+        let calendar = Calendar.current
+        let today = DevTools.currentAppDate ?? calendar.startOfDay(for: Date())
+        let checkInService = CheckInService.shared
+        if let idx = checkInService.checkIns.firstIndex(where: { calendar.isDate($0.date, inSameDayAs: today) }) {
+            checkInService.checkIns.remove(at: idx)
+            checkInService.saveCheckIns()
+        }
+        #endif
+    }
+    
     @MainActor
     static func resetToFreshUser() {
         // Reset all services to fresh state
@@ -35,6 +88,7 @@ struct DevTools {
 #if DEBUG
 struct DevToolsView: View {
     @Environment(\.dismiss) private var dismiss
+    @StateObject private var checkInService = CheckInService.shared
     
     var body: some View {
         NavigationView {
@@ -62,6 +116,19 @@ struct DevToolsView: View {
                         dismiss()
                     }
                     .buttonStyle(.bordered)
+                    
+                    Divider()
+                    Button("Test Data") {
+                        checkInService.loadSampleDataForTesting()
+                        HapticManager.shared.lightImpact()
+                    }
+                    Button("Skip Day Ahead") {
+                        DevTools.shared.skipDayAhead()
+                        HapticManager.shared.mediumImpact()
+                    }
+                    Button("Delete Today's Check-In") {
+                        Task { await DevTools.deleteTodayCheckIn() }
+                    }
                 }
                 
                 Spacer()

@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 class GoalService: ObservableObject {
     static let shared = GoalService()
     
@@ -9,6 +10,9 @@ class GoalService: ObservableObject {
     @Published var dailyBrainDumps: [DailyBrainDump] = []
     @Published var chatSessions: [ChatSession] = []
     @Published var isFirstTimeUser: Bool = true
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+    @Published var extractedTasks: [String] = []
     
     private let userDefaults = UserDefaults.standard
     private let goalsKey = "twelve_week_goals"
@@ -17,6 +21,15 @@ class GoalService: ObservableObject {
     private let dailyBrainDumpsKey = "daily_brain_dumps"
     private let chatSessionsKey = "ai_chat_sessions"
     private let firstTimeUserKey = "is_first_time_goal_user"
+    
+    // Helper to get the current app date (DEV-ONLY override) - same as CheckInService
+    var now: Date {
+        #if DEBUG
+        return DevTools.currentAppDate ?? Date()
+        #else
+        return Date()
+        #endif
+    }
     
     private init() {
         loadGoals()
@@ -125,15 +138,15 @@ class GoalService: ObservableObject {
         saveDailyProgress()
     }
     
-    func getDailyProgress(for goalId: UUID, date: Date = Date()) -> DailyGoalProgress? {
+    func getDailyProgress(for goalId: UUID, date: Date? = nil) -> DailyGoalProgress? {
+        let targetDate = date ?? now
         return dailyProgress.first { 
-            $0.goalId == goalId && Calendar.current.isDate($0.date, inSameDayAs: date)
+            $0.goalId == goalId && Calendar.current.isDate($0.date, inSameDayAs: targetDate)
         }
     }
     
     func getDailyProgressThisWeek(for goalId: UUID) -> [DailyGoalProgress] {
         let calendar = Calendar.current
-        let now = Date()
         
         return dailyProgress.filter { progress in
             progress.goalId == goalId &&
@@ -160,7 +173,7 @@ class GoalService: ObservableObject {
     
     func saveDailyBrainDump(_ brainDump: DailyBrainDump) {
         // Remove existing brain dump for today if it exists
-        let today = Calendar.current.startOfDay(for: Date())
+        let today = Calendar.current.startOfDay(for: now)
         dailyBrainDumps.removeAll { 
             Calendar.current.isDate($0.date, inSameDayAs: today)
         }
@@ -171,7 +184,7 @@ class GoalService: ObservableObject {
     }
     
     func getTodaysBrainDump() -> DailyBrainDump? {
-        let today = Calendar.current.startOfDay(for: Date())
+        let today = Calendar.current.startOfDay(for: now)
         return dailyBrainDumps.first { 
             Calendar.current.isDate($0.date, inSameDayAs: today)
         }
@@ -185,7 +198,6 @@ class GoalService: ObservableObject {
     
     func getBrainDumpsThisWeek() -> [DailyBrainDump] {
         let calendar = Calendar.current
-        let now = Date()
         
         return dailyBrainDumps.filter { brainDump in
             calendar.dateInterval(of: .weekOfYear, for: now)?.contains(brainDump.date) ?? false
@@ -247,12 +259,12 @@ class GoalService: ObservableObject {
         // 3. It's a new day since last check-in
         
         // Check if we have yesterday's check-in data
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
         let yesterdayCheckIn = CheckInService.shared.getCheckInForDate(yesterday)
         guard yesterdayCheckIn != nil else { return false }
         
         // Check if we already have today's advice session
-        let today = Calendar.current.startOfDay(for: Date())
+        let today = Calendar.current.startOfDay(for: now)
         let hasAdviceToday = chatSessions.contains { session in
             session.sessionType == .nextDayAdvice && 
             Calendar.current.isDate(session.date, inSameDayAs: today)
@@ -264,7 +276,7 @@ class GoalService: ObservableObject {
     private func getYesterdayContext() -> PreviousDayContext? {
         guard let yesterdayBrainDump = getYesterdayBrainDump() else { return nil }
         
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
         let yesterdayMood = getYesterdayMood() ?? "😐 Okay"
         
         // Extract challenges and wins from brain dump
@@ -286,7 +298,7 @@ class GoalService: ObservableObject {
     }
     
     private func getYesterdayBrainDump() -> DailyBrainDump? {
-        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: Date())!
+        let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: now)!
         return dailyBrainDumps.first { brainDump in
             Calendar.current.isDate(brainDump.date, inSameDayAs: yesterday)
         }
@@ -465,9 +477,6 @@ class GoalService: ObservableObject {
     }
     
     func getAIResponse(for message: String, in sessionId: UUID) async -> ChatMessage {
-        // TODO: Integrate with OpenAI API
-        // For now, return a mock response
-        
         guard let session = chatSessions.first(where: { $0.id == sessionId }) else {
             return ChatMessage(
                 content: "I'm sorry, I couldn't process your message. Please try again.",
@@ -475,8 +484,108 @@ class GoalService: ObservableObject {
             )
         }
         
-        let mockResponse = generateMockAIResponse(for: message, context: session)
-        return ChatMessage(content: mockResponse, type: .ai)
+        // Get user personality and goal context
+        let userPreferences = UserPreferencesService.shared
+        let personalityType = userPreferences.personalityProfile?.primaryType.rawValue ?? "supporter"
+        
+        // Get relevant goals for this session
+        let relevantGoals = activeGoals.filter { session.goalContext.contains($0.id) }
+        
+        // Get recent check-ins for context
+        let checkInService = CheckInService.shared
+        let recentCheckIns = checkInService.checkIns.suffix(3).map { checkIn in
+            [
+                "moodName": checkIn.moodName,
+                "date": checkIn.date.timeIntervalSince1970
+            ]
+        }
+        
+        // Prepare request payload
+        let requestPayload: [String: Any] = [
+            "message": message,
+            "personalityType": personalityType,
+            "goalContext": relevantGoals.map { goal in
+                [
+                    "id": goal.id.uuidString,
+                    "title": goal.title,
+                    "category": goal.category.rawValue,
+                    "progressPercentage": Int(goal.progressPercentage)
+                ]
+            },
+            "recentCheckIns": recentCheckIns,
+            "conversationHistory": session.messages.map { msg in
+                [
+                    "type": msg.type.rawValue,
+                    "content": msg.content,
+                    "timestamp": msg.timestamp.timeIntervalSince1970
+                ]
+            }
+        ]
+        
+        do {
+            // Call Supabase Edge Function
+            let url = URL(string: "https://rinjdpgdcdmtmadabqdf.supabase.co/functions/v1/generate-ai-response")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpbmpkcGdkY2RtdG1hZGFicWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0OTQ5MjcsImV4cCI6MjA2NzA3MDkyN30.vtWSWgvZgU1vIFG-wrAjBOi_jmIElwsttAkUvi1kVBg", forHTTPHeaderField: "Authorization")
+            
+            let jsonData = try JSONSerialization.data(withJSONObject: requestPayload)
+            request.httpBody = jsonData
+            
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                print("❌ AI API error: \(response)")
+                return ChatMessage(
+                    content: "I'm having trouble connecting right now. Let me try a different approach! 💙",
+                    type: .ai
+                )
+            }
+            
+            let aiResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+            let responseText = aiResponse?["response"] as? String ?? "I'm here to help! What would you like to explore?"
+            
+            let aiMessage = ChatMessage(content: responseText, type: .ai)
+            
+            // Add AI response to session
+            addMessageToSession(sessionId, message: ChatMessage(content: responseText, type: .ai))
+            
+            // Extract tasks from the conversation
+            extractTasksFromSession(sessionId)
+            
+            return aiMessage
+            
+        } catch {
+            print("❌ AI API error: \(error)")
+            // Fallback to mock response if API fails
+            let mockResponse = generateMockAIResponse(for: message, context: session)
+            let mockMessage = ChatMessage(content: mockResponse, type: .ai)
+            
+            // Add mock response to session
+            addMessageToSession(sessionId, message: ChatMessage(content: mockResponse, type: .ai))
+            
+            return mockMessage
+        }
+    }
+    
+    // MARK: - Task Extraction
+    
+    func extractTasksFromSession(_ sessionId: UUID) {
+        guard chatSessions.first(where: { $0.id == sessionId }) != nil else { return }
+        
+        // For now, skip task extraction until TaskService is properly integrated
+        // TODO: Implement task extraction when TaskService is ready
+    }
+    
+    func getExtractedTasks() -> [AppTask] {
+        // For now, return empty array until TaskService is properly integrated
+        return []
+    }
+    
+    func clearExtractedTasks() {
+        extractedTasks.removeAll()
     }
     
     private func createWelcomeMessage(for session: ChatSession) -> ChatMessage {

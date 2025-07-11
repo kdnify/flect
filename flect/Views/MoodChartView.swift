@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct MoodChartView: View {
-    let checkIns: [DailyCheckIn]
+    let moodData: [MoodDataPoint]
     @State private var selectedTimeframe: TimeFrame = .week
     
     var body: some View {
@@ -66,7 +66,7 @@ struct MoodChartView: View {
                 .font(.headline)
                 .foregroundColor(.textMainHex)
             
-            if filteredCheckIns.isEmpty {
+            if filteredMoodData.isEmpty {
                 emptyStateView
             } else {
                 moodTimelineChart
@@ -112,22 +112,22 @@ struct MoodChartView: View {
                     }
                     .stroke(Color.mediumGreyHex.opacity(0.2), lineWidth: 1)
                     // Mood line chart
-                    if filteredCheckIns.count > 1 {
+                    if filteredMoodData.count > 1 {
                         moodLineChart(in: geometry)
                     }
                     // Mood points
-                    ForEach(Array(filteredCheckIns.enumerated()), id: \.element.id) { index, checkIn in
-                        let x = geometry.size.width / CGFloat(max(filteredCheckIns.count - 1, 1)) * CGFloat(index)
-                        let moodLevelValue = moodLevel(for: checkIn.moodEmoji)
+                    ForEach(Array(filteredMoodData.enumerated()), id: \.offset) { index, moodDataPoint in
+                        let x = geometry.size.width / CGFloat(max(filteredMoodData.count - 1, 1)) * CGFloat(index)
+                        let moodLevelValue = moodLevel(for: moodDataPoint.mood)
                         let y = geometry.size.height - (geometry.size.height / 4 * CGFloat(moodLevelValue - 1))
                         Circle()
-                            .fill(Color.moodColor(for: checkIn.moodEmoji))
+                            .fill(Color.moodColor(for: moodDataPoint.mood))
                             .frame(width: 12, height: 12)
                             .position(x: x, y: y)
                             .overlay(
                                 Circle().stroke(Color.borderColorHex, lineWidth: 1)
                             )
-                            .accessibilityLabel("Mood: \(checkIn.moodEmoji)")
+                            .accessibilityLabel("Mood: \(moodDataPoint.mood)")
                     }
                 }
             }
@@ -140,9 +140,9 @@ struct MoodChartView: View {
     
     private func moodLineChart(in geometry: GeometryProxy) -> some View {
         Path { path in
-            let points = filteredCheckIns.enumerated().map { index, checkIn in
-                let x = geometry.size.width / CGFloat(max(filteredCheckIns.count - 1, 1)) * CGFloat(index)
-                let moodLevelValue = moodLevel(for: checkIn.moodEmoji)
+            let points = filteredMoodData.enumerated().map { index, moodDataPoint in
+                let x = geometry.size.width / CGFloat(max(filteredMoodData.count - 1, 1)) * CGFloat(index)
+                let moodLevelValue = moodLevel(for: moodDataPoint.mood)
                 let y = geometry.size.height - (geometry.size.height / 4 * CGFloat(moodLevelValue - 1))
                 return CGPoint(x: x, y: y)
             }
@@ -165,7 +165,7 @@ struct MoodChartView: View {
                 .font(.headline)
                 .foregroundColor(.textMainHex)
             
-            if !filteredCheckIns.isEmpty {
+            if !filteredMoodData.isEmpty {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
                     StatCard(
                         title: "Average Mood",
@@ -177,7 +177,7 @@ struct MoodChartView: View {
                     
                     StatCard(
                         title: "Total Days",
-                        value: "\(filteredCheckIns.count)",
+                        value: "\(filteredMoodData.count)",
                         subtitle: selectedTimeframe.rawValue.lowercased(),
                         icon: "calendar",
                         color: .green
@@ -205,28 +205,28 @@ struct MoodChartView: View {
     
     // MARK: - Helper Properties
     
-    private var filteredCheckIns: [DailyCheckIn] {
+    private var filteredMoodData: [MoodDataPoint] {
         let calendar = Calendar.current
         let now = Date()
         
-        return checkIns.filter { checkIn in
+        return moodData.filter { moodDataPoint in
             switch selectedTimeframe {
             case .week:
-                return calendar.dateInterval(of: .weekOfYear, for: now)?.contains(checkIn.date) ?? false
+                return calendar.dateInterval(of: .weekOfYear, for: now)?.contains(moodDataPoint.day) ?? false
             case .month:
-                return calendar.dateInterval(of: .month, for: now)?.contains(checkIn.date) ?? false
+                return calendar.dateInterval(of: .month, for: now)?.contains(moodDataPoint.day) ?? false
             case .all:
                 return true
             }
-        }.sorted { $0.date < $1.date }
+        }.sorted { $0.day < $1.day }
     }
     
     private var averageMood: Double {
-        guard !filteredCheckIns.isEmpty else { return 0 }
-        let total = filteredCheckIns.reduce(0) { sum, checkIn in
-            sum + moodValue(from: checkIn.moodEmoji)
+        guard !filteredMoodData.isEmpty else { return 0 }
+        let total = filteredMoodData.reduce(0) { sum, moodDataPoint in
+            sum + moodValue(from: moodDataPoint.mood)
         }
-        return Double(total) / Double(filteredCheckIns.count)
+        return Double(total) / Double(filteredMoodData.count)
     }
     
     private var averageMoodText: String {
@@ -240,28 +240,28 @@ struct MoodChartView: View {
     }
     
     private var bestMoodEmoji: String {
-        guard let bestCheckIn = filteredCheckIns.max(by: { 
-            moodValue(from: $0.moodEmoji) < moodValue(from: $1.moodEmoji) 
+        guard let bestMoodDataPoint = filteredMoodData.max(by: { 
+            moodValue(from: $0.mood) < moodValue(from: $1.mood) 
         }) else { return "😐" }
-        return bestCheckIn.moodEmoji
+        return bestMoodDataPoint.mood
     }
     
     private var bestMoodDate: String {
-        guard let bestCheckIn = filteredCheckIns.max(by: { 
-            moodValue(from: $0.moodEmoji) < moodValue(from: $1.moodEmoji) 
+        guard let bestMoodDataPoint = filteredMoodData.max(by: { 
+            moodValue(from: $0.mood) < moodValue(from: $1.mood) 
         }) else { return "No data" }
         
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM d"
-        return formatter.string(from: bestCheckIn.date)
+        return formatter.string(from: bestMoodDataPoint.day)
     }
     
     private var moodTrendEmoji: String {
-        guard filteredCheckIns.count >= 3 else { return "📊" }
+        guard filteredMoodData.count >= 3 else { return "📊" }
         
-        let recent = Array(filteredCheckIns.suffix(3))
-        let firstMood = moodValue(from: recent.first!.moodEmoji)
-        let lastMood = moodValue(from: recent.last!.moodEmoji)
+        let recent = Array(filteredMoodData.suffix(3))
+        let firstMood = moodValue(from: recent.first!.mood)
+        let lastMood = moodValue(from: recent.last!.mood)
         
         if lastMood > firstMood {
             return "📈"
@@ -273,11 +273,11 @@ struct MoodChartView: View {
     }
     
     private var moodTrendText: String {
-        guard filteredCheckIns.count >= 3 else { return "Need more data" }
+        guard filteredMoodData.count >= 3 else { return "Need more data" }
         
-        let recent = Array(filteredCheckIns.suffix(3))
-        let firstMood = moodValue(from: recent.first!.moodEmoji)
-        let lastMood = moodValue(from: recent.last!.moodEmoji)
+        let recent = Array(filteredMoodData.suffix(3))
+        let firstMood = moodValue(from: recent.first!.mood)
+        let lastMood = moodValue(from: recent.last!.mood)
         
         if lastMood > firstMood {
             return "Improving"
@@ -290,24 +290,24 @@ struct MoodChartView: View {
     
     // MARK: - Helper Functions
     
-    private func moodValue(from emoji: String) -> Int {
-        switch emoji {
-        case "😢": return 1
-        case "😞": return 2
-        case "😐": return 3
-        case "😊": return 4
-        case "😍": return 5
+    private func moodValue(from name: String) -> Int {
+        switch name {
+        case "Rough": return 1
+        case "Okay": return 2
+        case "Neutral": return 3
+        case "Good": return 4
+        case "Great": return 5
         default: return 3
         }
     }
     
-    private func moodColor(from emoji: String) -> Color {
-        switch emoji {
-        case "😢": return .red
-        case "😞": return .orange
-        case "😐": return .yellow
-        case "😊": return .green
-        case "😍": return .purple
+    private func moodColor(from name: String) -> Color {
+        switch name {
+        case "Rough": return .red
+        case "Okay": return .orange
+        case "Neutral": return .yellow
+        case "Good": return .green
+        case "Great": return .purple
         default: return .gray
         }
     }
@@ -346,8 +346,8 @@ struct MoodChartView: View {
     }
     
     private var bestMoodName: String {
-        guard let bestCheckIn = filteredCheckIns.max(by: { moodLevel(for: $0.moodEmoji) < moodLevel(for: $1.moodEmoji) }) else { return "Neutral" }
-        return bestCheckIn.moodEmoji
+        guard let bestMoodDataPoint = filteredMoodData.max(by: { moodLevel(for: $0.mood) < moodLevel(for: $1.mood) }) else { return "Neutral" }
+        return bestMoodDataPoint.mood
     }
     
     private var moodLevelIndicators: some View {
@@ -414,5 +414,5 @@ struct StatCard: View {
 }
 
 #Preview {
-    MoodChartView(checkIns: [])
+    MoodChartView(moodData: [])
 } 

@@ -91,13 +91,13 @@ struct HistoryView: View {
                         let checkIn = filteredCheckIns.suffix(7)[index]
                         VStack(spacing: 4) {
                             Circle()
-                                .fill(Color.moodColor(for: checkIn.moodEmoji))
+                                .fill(Color.moodColor(for: checkIn.moodName))
                                 .frame(width: 24, height: 24)
-                                .shadow(color: Color.moodColor(for: checkIn.moodEmoji).opacity(0.15), radius: 4, x: 0, y: 1)
+                                .shadow(color: Color.moodColor(for: checkIn.moodName).opacity(0.15), radius: 4, x: 0, y: 1)
                                 .overlay(
                                     Circle().stroke(Color.borderColorHex, lineWidth: 1)
                                 )
-                                .accessibilityLabel("Mood: \(checkIn.moodEmoji)")
+                                .accessibilityLabel("Mood: \(checkIn.moodName)")
                             Text(dayOfWeek(checkIn.date))
                                 .font(.caption2)
                                 .foregroundColor(.mediumGreyHex)
@@ -157,7 +157,7 @@ struct HistoryView: View {
     }
     
     private var moodTrendText: String {
-        let recentMoods = filteredCheckIns.suffix(7).map { moodScore(from: $0.moodEmoji) }
+        let recentMoods = filteredCheckIns.suffix(7).map { moodScore(from: $0.moodName) }
         if recentMoods.count < 3 { return "Keep checking in to see patterns!" }
         
         let recent = Array(recentMoods.suffix(3))
@@ -181,14 +181,14 @@ struct HistoryView: View {
         return formatter.string(from: date)
     }
     
-    // Helper function to convert emoji to numerical score
-    private func moodScore(from emoji: String) -> Double {
-        switch emoji {
-        case "😭", "😢", "☹️", "😞": return 0.2
-        case "😔", "😕", "🙁": return 0.4
-        case "😐", "😌", "😑": return 0.6
-        case "🙂", "😊", "😄": return 0.8
-        case "😁", "😆", "🤩", "😍", "🥳": return 1.0
+    // Helper function to convert mood name to numerical score
+    private func moodScore(from moodName: String) -> Double {
+        switch moodName {
+        case "sad", "depressed", "unhappy": return 0.2
+        case "neutral", "okay", "meh": return 0.4
+        case "happy", "content", "good": return 0.6
+        case "great", "amazing", "excellent": return 0.8
+        case "excited", "ecstatic", "thrilled": return 1.0
         default: return 0.6 // Default neutral
         }
     }
@@ -204,13 +204,13 @@ struct CheckInHistoryCard: View {
                 // Header
                 HStack {
                     Circle()
-                        .fill(Color.moodColor(for: checkIn.moodEmoji))
+                        .fill(Color.moodColor(for: checkIn.moodName))
                         .frame(width: 32, height: 32)
-                        .shadow(color: Color.moodColor(for: checkIn.moodEmoji).opacity(0.15), radius: 6, x: 0, y: 2)
+                        .shadow(color: Color.moodColor(for: checkIn.moodName).opacity(0.15), radius: 6, x: 0, y: 2)
                         .overlay(
                             Circle().stroke(Color.borderColorHex, lineWidth: 1)
                         )
-                        .accessibilityLabel("Mood: \(checkIn.moodEmoji)")
+                        .accessibilityLabel("Mood: \(checkIn.moodName)")
                     VStack(alignment: .leading, spacing: 2) {
                         Text(formatDate(checkIn.date))
                             .font(.subheadline)
@@ -287,14 +287,14 @@ struct CheckInHistoryCard: View {
         }
     }
     
-    // Helper function to convert emoji to numerical score
-    private func moodScore(from emoji: String) -> Double {
-        switch emoji {
-        case "😭", "😢", "☹️", "😞": return 0.2
-        case "😔", "😕", "🙁": return 0.4
-        case "😐", "😌", "😑": return 0.6
-        case "🙂", "😊", "😄": return 0.8
-        case "😁", "😆", "🤩", "😍", "🥳": return 1.0
+    // Helper function to convert mood name to numerical score
+    private func moodScore(from moodName: String) -> Double {
+        switch moodName {
+        case "sad", "depressed", "unhappy": return 0.2
+        case "neutral", "okay", "meh": return 0.4
+        case "happy", "content", "good": return 0.6
+        case "great", "amazing", "excellent": return 0.8
+        case "excited", "ecstatic", "thrilled": return 1.0
         default: return 0.6 // Default neutral
         }
     }

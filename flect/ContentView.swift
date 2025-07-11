@@ -46,22 +46,6 @@ struct ContentView: View {
             }
             
             #if DEBUG
-            // Dev tools access - visible debug button for easier access
-            VStack {
-                HStack {
-                    Button(action: { showingDevTools = true }) {
-                        Text("🛠️ DevTools")
-                            .font(.caption)
-                            .padding(8)
-                            .background(Color.yellow.opacity(0.7))
-                            .cornerRadius(8)
-                    }
-                    .padding(.leading, 12)
-                    .padding(.top, 8)
-                    Spacer()
-                }
-                Spacer()
-            }
             #endif
         }
         .onReceive(NotificationCenter.default.publisher(for: .onboardingCompleted)) { _ in
@@ -74,6 +58,9 @@ struct ContentView: View {
         #if DEBUG
         .sheet(isPresented: $showingDevTools) {
             DevToolsView()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: Notification.Name("showDevTools"))) { _ in
+            showingDevTools = true
         }
         #endif
     }

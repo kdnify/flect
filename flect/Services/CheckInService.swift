@@ -1,6 +1,13 @@
 import Foundation
 import SwiftUI
 
+// MARK: - Calendar Day State
+enum CalendarDayState {
+    case hasCheckIn(mood: String)
+    case streakGap
+    case noCheckIn
+}
+
 // MARK: - AI Response Models
 struct CheckInAIResponse: Codable {
     let aiResponse: String
@@ -34,6 +41,17 @@ class CheckInService: ObservableObject {
     private let insightsKey = "flect_insights"
     private let userDefaults = UserDefaults.standard
     
+    // Helper to get the current app date (DEV-ONLY override)
+    var now: Date {
+        #if DEBUG
+        return DevTools.currentAppDate ?? Date()
+        #else
+        return Date()
+        #endif
+    }
+
+    // Update all usages of Date() in this file to use 'now' instead, for all date logic (e.g., streaks, today, calendar, etc.)
+    
     private init() {
         loadCheckIns()
         
@@ -43,16 +61,35 @@ class CheckInService: ObservableObject {
     
     // MARK: - Check-in Management
     
-    func submitCheckIn(happyThing: String, improveThing: String, moodEmoji: String) async throws -> DailyCheckIn {
+    func submitCheckIn(
+        happyThing: String,
+        improveThing: String,
+        moodName: String,
+        date: Date? = nil,
+        energy: Int? = nil,
+        sleep: Int? = nil,
+        social: Int? = nil,
+        highlight: String? = nil,
+        wellbeingScore: Int? = nil
+    ) async throws -> DailyCheckIn {
         isLoading = true
         errorMessage = nil
         
-        // Create the check-in
+        // Use provided date or simulated date (now) - NEVER use real Date()
+        let checkInDate = date ?? now
+        
+        // Create the check-in with the correct date
         let checkIn = DailyCheckIn(
+            date: checkInDate, // Always use simulated date in dev/testing
             happyThing: happyThing,
             improveThing: improveThing,
-            moodEmoji: moodEmoji,
-            completionState: .completed
+            moodName: moodName,
+            completionState: .completed,
+            energy: energy,
+            sleep: sleep,
+            social: social,
+            highlight: highlight,
+            wellbeingScore: wellbeingScore
         )
         
         // Add to local storage
@@ -69,7 +106,7 @@ class CheckInService: ObservableObject {
     }
     
     func getTodaysCheckIn() -> DailyCheckIn? {
-        return checkIns.first { $0.isToday }
+        return checkIns.first { Calendar.current.isDate($0.date, inSameDayAs: now) }
     }
     
     func hasCheckedInToday() -> Bool {
@@ -130,7 +167,7 @@ class CheckInService: ObservableObject {
                         date: checkIn.date,
                         happyThing: checkIn.happyThing,
                         improveThing: checkIn.improveThing,
-                        moodEmoji: checkIn.moodEmoji,
+                        moodName: checkIn.moodName,
                         completionState: .followUpPending,
                         aiResponse: aiResponse.aiResponse,
                         aiQuestionAsked: aiResponse.aiResponse,
@@ -162,7 +199,7 @@ class CheckInService: ObservableObject {
                         date: checkIn.date,
                         happyThing: checkIn.happyThing,
                         improveThing: checkIn.improveThing,
-                        moodEmoji: checkIn.moodEmoji,
+                        moodName: checkIn.moodName,
                         completionState: .followUpPending,
                         aiResponse: aiResponse,
                         aiQuestionAsked: aiResponse,
@@ -615,9 +652,9 @@ class CheckInService: ObservableObject {
         // Negative sentiment in improvement area is normal, so we invert and scale down
         score += (1.0 - improveSentiment) * 0.1
         
-        // Factor in emoji mood
-        let emoji = checkIn.moodEmoji
-        score += calculateEmojiSentiment(emoji: emoji) * 0.3
+        // Factor in mood name
+        let moodName = checkIn.moodName
+        score += calculateMoodNameSentiment(moodName: moodName) * 0.3
         
         // Completion state affects mood
         switch checkIn.completionState {
@@ -654,17 +691,17 @@ class CheckInService: ObservableObject {
         return Double(positiveCount) / Double(totalSentimentWords)
     }
     
-    private func calculateEmojiSentiment(emoji: String) -> Double {
-        switch emoji {
-        case "😊", "😄", "😁", "🥰", "😍", "🤗", "😆", "🙂", "🔥", "✨", "🎉", "💪", "👍", "❤️", "🌟":
+    private func calculateMoodNameSentiment(moodName: String) -> Double {
+        switch moodName {
+        case "Great", "Amazing", "Wonderful", "Excellent", "Fantastic", "Awesome", "Love", "Enjoy", "Fun", "Beautiful", "Peaceful", "Successful", "Accomplished", "Excited", "Grateful", "Blessed", "Perfect", "Delicious", "Comfortable", "Relaxed", "Proud", "Confident", "Energized", "Refreshed", "Satisfied", "Content", "Joyful", "Pleasant":
             return 0.9
-        case "😌", "🙃", "😇", "🤔", "👌", "😋", "😎", "🥳":
+        case "Good", "Great", "Wonderful", "Excellent", "Fantastic", "Awesome", "Love", "Enjoy", "Fun", "Beautiful", "Peaceful", "Successful", "Accomplished", "Excited", "Grateful", "Blessed", "Perfect", "Delicious", "Comfortable", "Relaxed", "Proud", "Confident", "Energized", "Refreshed", "Satisfied", "Content", "Joyful", "Pleasant":
             return 0.7
-        case "😐", "😑", "🤷‍♂️", "🤷‍♀️", "🙄", "🫤":
+        case "Okay", "Neutral", "Good", "Great", "Wonderful", "Excellent", "Fantastic", "Awesome", "Love", "Enjoy", "Fun", "Beautiful", "Peaceful", "Successful", "Accomplished", "Excited", "Grateful", "Blessed", "Perfect", "Delicious", "Comfortable", "Relaxed", "Proud", "Confident", "Energized", "Refreshed", "Satisfied", "Content", "Joyful", "Pleasant":
             return 0.5
-        case "😔", "😕", "🙁", "😟", "😰", "😓", "😫", "😤", "👎", "🤯", "😮‍💨":
+        case "Rough", "Bad", "Terrible", "Awful", "Horrible", "Hate", "Stress", "Tired", "Exhausted", "Difficult", "Hard", "Challenging", "Frustrating", "Annoying", "Disappointing", "Sad", "Worried", "Anxious", "Overwhelmed", "Busy", "Rushed", "Sick", "Pain", "Struggle", "Problem", "Issue", "Conflict", "Argument":
             return 0.3
-        case "😢", "😭", "😞", "😖", "😣", "😩", "🥺", "😳", "😨", "😱", "💔":
+        case "Sad", "Worried", "Anxious", "Overwhelmed", "Sick", "Pain", "Struggle", "Problem", "Issue", "Conflict", "Argument":
             return 0.1
         default:
             return 0.5
@@ -710,15 +747,93 @@ class CheckInService: ObservableObject {
         )
     }
     
+    /// Returns dates that are part of the current streak, including gap allowances
+    func getCurrentStreakDates() -> [Date] {
+        let sortedCheckIns = checkIns.sorted { $0.date > $1.date }
+        var streakDates: [Date] = []
+        var currentDate = Calendar.current.startOfDay(for: now)
+        
+        for checkIn in sortedCheckIns {
+            let checkInDate = Calendar.current.startOfDay(for: checkIn.date)
+            
+            if Calendar.current.isDate(checkInDate, inSameDayAs: currentDate) {
+                streakDates.append(checkInDate)
+                currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate) ?? currentDate
+            } else if checkInDate < currentDate {
+                // Allow for one day gap (e.g., if someone checks in late)
+                let daysBetween = Calendar.current.dateComponents([.day], from: checkInDate, to: currentDate).day ?? 0
+                if daysBetween <= 1 {
+                    streakDates.append(checkInDate)
+                    currentDate = Calendar.current.startOfDay(for: checkIn.date)
+                    currentDate = Calendar.current.date(byAdding: .day, value: -1, to: currentDate) ?? currentDate
+                } else {
+                    break
+                }
+            }
+        }
+        
+        return streakDates.sorted()
+    }
+    
+    /// Returns dates for the last 7 days that should be highlighted in the calendar
+    /// This includes both actual check-ins and streak-eligible dates
+    func getCalendarDates() -> [Date] {
+        let calendar = Calendar.current
+        let today = now
+        let last7Days = (0..<7).compactMap { 
+            calendar.date(byAdding: .day, value: -6 + $0, to: today)
+        }
+        
+        let streakDates = getCurrentStreakDates()
+        let streakDateSet = Set(streakDates.map { calendar.startOfDay(for: $0) })
+        
+        return last7Days.map { date in
+            let startOfDay = calendar.startOfDay(for: date)
+            return startOfDay
+        }
+    }
+    
+    /// Returns the calendar state for each date in the last 7 days
+    func getCalendarState() -> [Date: CalendarDayState] {
+        let calendar = Calendar.current
+        let today = now
+        let last7Days = (0..<7).compactMap { 
+            calendar.date(byAdding: .day, value: -6 + $0, to: today)
+        }
+        
+        let streakDates = getCurrentStreakDates()
+        let streakDateSet = Set(streakDates.map { calendar.startOfDay(for: $0) })
+        
+        var calendarState: [Date: CalendarDayState] = [:]
+        
+        for date in last7Days {
+            let startOfDay = calendar.startOfDay(for: date)
+            let checkIn = getCheckInForDate(date)
+            
+            if let checkIn = checkIn {
+                // Has a check-in
+                calendarState[date] = .hasCheckIn(mood: checkIn.moodName)
+            } else if streakDateSet.contains(startOfDay) {
+                // Part of current streak but no check-in (gap day)
+                calendarState[date] = .streakGap
+            } else {
+                // No check-in and not part of streak
+                calendarState[date] = .noCheckIn
+            }
+        }
+        
+        return calendarState
+    }
+    
     private func daysSinceFirstCheckIn() -> Int {
         guard let firstCheckIn = checkIns.min(by: { $0.createdAt < $1.createdAt }) else { return 0 }
-        return Calendar.current.dateComponents([.day], from: firstCheckIn.createdAt, to: Date()).day ?? 0
+        return Calendar.current.dateComponents([.day], from: firstCheckIn.createdAt, to: now).day ?? 0
     }
     
     private func calculateCurrentStreak() -> Int {
         let sortedCheckIns = checkIns.sorted { $0.date > $1.date }
         var streak = 0
-        var currentDate = Calendar.current.startOfDay(for: Date())
+        var currentDate = Calendar.current.startOfDay(for: now)
         
         for checkIn in sortedCheckIns {
             let checkInDate = Calendar.current.startOfDay(for: checkIn.date)
@@ -783,6 +898,13 @@ class CheckInService: ObservableObject {
         
         // Save to UserDefaults
         saveCheckIns()
+        
+        // Debug: Log the date being saved
+        #if DEBUG
+        print("💾 Saved check-in for date: \(checkIn.date)")
+        print("   Simulated date (now): \(now)")
+        print("   Real date: \(Date())")
+        #endif
     }
     
     private func loadCheckIns() {
@@ -800,7 +922,8 @@ class CheckInService: ObservableObject {
         }
     }
     
-    private func saveCheckIns() {
+    // Change from private to internal so DevTools can call it
+    func saveCheckIns() {
         do {
             let data = try JSONEncoder().encode(checkIns)
             userDefaults.set(data, forKey: storageKey)
@@ -836,87 +959,42 @@ class CheckInService: ObservableObject {
     
     private func createSampleCheckIns() -> [DailyCheckIn] {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        
+        let today = calendar.startOfDay(for: now) // Use simulated date
+        let moods = ["Rough", "Okay", "Neutral", "Good", "Great"]
         var sampleCheckIns: [DailyCheckIn] = []
         
-        // Create check-ins for the past 30 days
-        for dayOffset in 0..<30 {
+        // Create check-ins for the last 7 days, cycling through moods
+        for dayOffset in (0..<7).reversed() {
             guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: today) else { continue }
-            
-            // Skip some days to make it realistic (not checking in every single day)
-            // But ALWAYS include yesterday (dayOffset = 1) to show Morning Insights
-            if dayOffset > 1 && (dayOffset % 3 == 0 || dayOffset % 7 == 0) {
-                continue
-            }
-            
-            // Use proper mood names that match our color system
-            let moodNames = ["Rough", "Okay", "Neutral", "Good", "Great"]
-            let happyThings = [
-                "Had a great workout this morning",
-                "Enjoyed a coffee with a friend",
-                "Finished a good book",
-                "Went for a peaceful walk",
-                "Cooked a delicious meal",
-                "Had a productive work session",
-                "Listened to an amazing podcast",
-                "Spent time in nature",
-                "Learned something new",
-                "Helped someone out"
-            ]
-            
-            let improveThings = [
-                "Better sleep schedule",
-                "More organized workspace",
-                "Drinking more water",
-                "Less screen time",
-                "More consistent exercise",
-                "Better time management",
-                "Eating more vegetables",
-                "Connecting with friends",
-                "Taking more breaks",
-                "Practicing mindfulness"
-            ]
-            
-            // Create a realistic mood distribution (more good/neutral days than rough ones)
-            let moodWeights = [1, 2, 3, 4, 3] // Rough=1, Okay=2, Neutral=3, Good=4, Great=3
-            let randomWeight = Int.random(in: 1...13) // Total weight is 13
-            var moodIndex = 2 // Default to Neutral
-            var currentWeight = 0
-            
-            for (index, weight) in moodWeights.enumerated() {
-                currentWeight += weight
-                if randomWeight <= currentWeight {
-                    moodIndex = index
-                    break
-                }
-            }
-            
-            let moodName = moodNames[moodIndex]
-            let happyThing = happyThings.randomElement() ?? "Had a good day"
-            let improveThing = improveThings.randomElement() ?? "Better self-care"
-            
+            let mood = moods[dayOffset % moods.count]
+            let happyThing = "Sample happy thing for \(mood)"
+            let improveThing = "Sample improve thing for \(mood)"
             let checkIn = DailyCheckIn(
-                date: date,
+                date: date, // Use calculated date (based on simulated today)
                 happyThing: happyThing,
                 improveThing: improveThing,
-                moodEmoji: moodName, // Now using mood names instead of emojis
-                completionState: .completed,
-                aiResponse: dayOffset < 5 ? "That's wonderful! Keep up the positive momentum! 🌟" : nil,
-                aiQuestionAsked: dayOffset < 5 ? "How can we build on this positive energy tomorrow?" : nil,
-                followUpCompleted: dayOffset < 3
+                moodName: mood,
+                completionState: .completed
             )
-            
             sampleCheckIns.append(checkIn)
         }
-        
-        return sampleCheckIns.sorted { $0.date < $1.date }
+        return sampleCheckIns
     }
     
     // MARK: - Public API
     
     func getRecentCheckIns(limit: Int = 10) -> [DailyCheckIn] {
         return Array(checkIns.sorted { $0.date > $1.date }.prefix(limit))
+    }
+    
+    /// Load sample data for testing streak calculation and calendar display
+    func loadSampleDataForTesting() {
+        let sampleCheckIns = createSampleCheckIns()
+        checkIns = sampleCheckIns
+        saveCheckIns()
+        print("📊 Loaded \(sampleCheckIns.count) sample check-ins for testing")
+        print("🔥 Current streak: \(calculateCurrentStreak()) days")
+        print("📅 Streak dates: \(getCurrentStreakDates().map { Calendar.current.component(.day, from: $0) })")
     }
     
     func getActiveInsights() -> [UserInsight] {
@@ -945,7 +1023,7 @@ class CheckInService: ObservableObject {
         saveInsights()
         
         print("🔄 Reset to sample data - \(checkIns.count) check-ins loaded")
-        print("📅 Today's date: \(DateFormatter().string(from: Date()))")
+        print("📅 Today's date: \(DateFormatter().string(from: now))")
         print("🔍 Has checked in today: \(hasCheckedInToday())")
         
         if let todaysCheckIn = getTodaysCheckIn() {

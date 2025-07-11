@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		16F73594DF86B1FDB9465A86 /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ABA8C672F7EFFD1DC45B042 /* GoalService.swift */; };
+		16F73594DF86B1FDB9465A86 /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE912E208807006165FA /* GoalService.swift */; };
 		1DB30A111875508D8275F5B2 /* MorningInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE862E208470006165FA /* MorningInsightsView.swift */; };
 		230B20828B259C8F24FACE16 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BB142738BDD51A22AF1EAE /* HapticManager.swift */; };
+		DE5A23D52E1D93650057C770 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5A23D62E1D93650057C770 /* NotificationService.swift */; };
 		3B34AAAB4F34087181BF1E6C /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* HomeView.swift */; };
 		3D50A43CC5C4121887CCF87D /* EnhancedGoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */; };
 		50A17AC52853E45F1686CA24 /* UserPreferencesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61959A7F04534470F60A6A0C /* UserPreferencesService.swift */; };
@@ -86,8 +87,47 @@
 		DECBAE922E208807006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE912E208807006165FA /* GoalService.swift */; };
 		DECBAE932E208807006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE912E208807006165FA /* GoalService.swift */; };
 		DECBAE942E208807006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE912E208807006165FA /* GoalService.swift */; };
+		DEEBCE3C2E2178F9000630D1 /* SprintService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE3A2E2178F8000630D1 /* SprintService.swift */; };
+		DEEBCE3D2E2178F9000630D1 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE3B2E2178F8000630D1 /* TaskService.swift */; };
+		DEEBCE3E2E2178F9000630D1 /* SprintService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE3A2E2178F8000630D1 /* SprintService.swift */; };
+		DEEBCE3F2E2178F9000630D1 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE3B2E2178F8000630D1 /* TaskService.swift */; };
+		DEEBCE402E2178F9000630D1 /* SprintService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE3A2E2178F8000630D1 /* SprintService.swift */; };
+		DEEBCE412E2178F9000630D1 /* TaskService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE3B2E2178F8000630D1 /* TaskService.swift */; };
+		DEEBCE472E217913000630D1 /* SprintCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE422E217913000630D1 /* SprintCreationView.swift */; };
+		DEEBCE482E217913000630D1 /* SprintPlanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE432E217913000630D1 /* SprintPlanningView.swift */; };
+		DEEBCE492E217913000630D1 /* SprintTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE442E217913000630D1 /* SprintTrackingView.swift */; };
+		DEEBCE4A2E217913000630D1 /* TaskManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE452E217913000630D1 /* TaskManagementView.swift */; };
+		DEEBCE4B2E217913000630D1 /* WeeklyInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE462E217913000630D1 /* WeeklyInsightsView.swift */; };
+		DEEBCE4C2E217914000630D1 /* SprintCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE422E217913000630D1 /* SprintCreationView.swift */; };
+		DEEBCE4D2E217914000630D1 /* SprintPlanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE432E217913000630D1 /* SprintPlanningView.swift */; };
+		DEEBCE4E2E217914000630D1 /* SprintTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE442E217913000630D1 /* SprintTrackingView.swift */; };
+		DEEBCE4F2E217914000630D1 /* TaskManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE452E217913000630D1 /* TaskManagementView.swift */; };
+		DEEBCE502E217914000630D1 /* WeeklyInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE462E217913000630D1 /* WeeklyInsightsView.swift */; };
+		DEEBCE512E217914000630D1 /* SprintCreationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE422E217913000630D1 /* SprintCreationView.swift */; };
+		DEEBCE522E217914000630D1 /* SprintPlanningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE432E217913000630D1 /* SprintPlanningView.swift */; };
+		DEEBCE532E217914000630D1 /* SprintTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE442E217913000630D1 /* SprintTrackingView.swift */; };
+		DEEBCE542E217914000630D1 /* TaskManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE452E217913000630D1 /* TaskManagementView.swift */; };
+		DEEBCE552E217914000630D1 /* WeeklyInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE462E217913000630D1 /* WeeklyInsightsView.swift */; };
+		DEEBCE6C2E218082000630D1 /* SharedTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE6A2E218082000630D1 /* SharedTypes.swift */; };
+		DEEBCE6D2E218082000630D1 /* Sprint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE6B2E218082000630D1 /* Sprint.swift */; };
+		DEEBCE6E2E218082000630D1 /* SharedTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE6A2E218082000630D1 /* SharedTypes.swift */; };
+		DEEBCE6F2E218082000630D1 /* Sprint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE6B2E218082000630D1 /* Sprint.swift */; };
+		DEEBCE702E218082000630D1 /* SharedTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE6A2E218082000630D1 /* SharedTypes.swift */; };
+		DEEBCE712E218082000630D1 /* Sprint.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE6B2E218082000630D1 /* Sprint.swift */; };
+		DEEBCE732E21A932000630D1 /* MultiStepCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE722E21A932000630D1 /* MultiStepCheckInView.swift */; };
+		DEEBCE742E21A932000630D1 /* MultiStepCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE722E21A932000630D1 /* MultiStepCheckInView.swift */; };
+		DEEBCE752E21A932000630D1 /* MultiStepCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEBCE722E21A932000630D1 /* MultiStepCheckInView.swift */; };
 		E20EA4D5E07C45D5C2D162DF /* PostSubmissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */; };
 		F15DC28F356DDD0F35191C76 /* FirstCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9FF1BC7043E3163D91A9DB /* FirstCheckInView.swift */; };
+		PERSONALITY001ABCDEF123456 /* PersonalityProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = PERSONALITY001FILEREF123 /* PersonalityProfile.swift */; };
+		PERSONALITY002ABCDEF123456 /* PersonalityQuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PERSONALITY002FILEREF123 /* PersonalityQuizView.swift */; };
+		PERSONALITY003ABCDEF123456 /* PersonalityProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = PERSONALITY001FILEREF123 /* PersonalityProfile.swift */; };
+		PERSONALITY004ABCDEF123456 /* PersonalityQuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PERSONALITY002FILEREF123 /* PersonalityQuizView.swift */; };
+		PERSONALITY005ABCDEF123456 /* PersonalityProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = PERSONALITY001FILEREF123 /* PersonalityProfile.swift */; };
+		PERSONALITY006ABCDEF123456 /* PersonalityQuizView.swift in Sources */ = {isa = PBXBuildFile; fileRef = PERSONALITY002FILEREF123 /* PersonalityQuizView.swift */; };
+		TRIALPAYWALL01ABCDEF123456 /* TrialPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TRIALPAYWALL01FILEREF123 /* TrialPaywallView.swift */; };
+		TRIALPAYWALL02ABCDEF123456 /* TrialPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TRIALPAYWALL01FILEREF123 /* TrialPaywallView.swift */; };
+		TRIALPAYWALL03ABCDEF123456 /* TrialPaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = TRIALPAYWALL01FILEREF123 /* TrialPaywallView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,47 +148,61 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PostSubmissionView.swift; sourceTree = "<group>"; };
-		04BB142738BDD51A22AF1EAE /* HapticManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
-		0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DaylioCheckInView.swift; sourceTree = "<group>"; };
+		034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PostSubmissionView.swift; path = flect/Views/PostSubmissionView.swift; sourceTree = SOURCE_ROOT; };
+		04BB142738BDD51A22AF1EAE /* HapticManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HapticManager.swift; path = flect/Utils/HapticManager.swift; sourceTree = SOURCE_ROOT; };
+		DE5A23D62E1D93650057C770 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationService.swift; path = flect/Services/NotificationService.swift; sourceTree = SOURCE_ROOT; };
+		0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DaylioCheckInView.swift; path = flect/Views/DaylioCheckInView.swift; sourceTree = SOURCE_ROOT; };
 		1A527C3AE2D8B782DC405495 /* PersonalDashboard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PersonalDashboard.swift; path = flect/Views/PersonalDashboard.swift; sourceTree = "<group>"; };
 		2ABA8C672F7EFFD1DC45B042 /* GoalService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GoalService.swift; path = flect/Services/GoalService.swift; sourceTree = "<group>"; };
-		2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoodChartView.swift; sourceTree = "<group>"; };
-		44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
-		4A2598EE87D03A28A69AF044 /* QuickCheckInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickCheckInView.swift; sourceTree = "<group>"; };
+		2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MoodChartView.swift; path = flect/Views/MoodChartView.swift; sourceTree = SOURCE_ROOT; };
+		44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LaunchScreen.swift; path = flect/Views/LaunchScreen.swift; sourceTree = SOURCE_ROOT; };
+		4A2598EE87D03A28A69AF044 /* QuickCheckInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = QuickCheckInView.swift; path = flect/Views/QuickCheckInView.swift; sourceTree = SOURCE_ROOT; };
 		4D2E001531F4C959114D492E /* WelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WelcomeView.swift; path = flect/Views/WelcomeView.swift; sourceTree = SOURCE_ROOT; };
-		61959A7F04534470F60A6A0C /* UserPreferencesService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UserPreferencesService.swift; sourceTree = "<group>"; };
+		61959A7F04534470F60A6A0C /* UserPreferencesService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UserPreferencesService.swift; path = flect/Services/UserPreferencesService.swift; sourceTree = SOURCE_ROOT; };
 		6A9FF1BC7043E3163D91A9DB /* FirstCheckInView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FirstCheckInView.swift; path = flect/Views/FirstCheckInView.swift; sourceTree = SOURCE_ROOT; };
 		6d9f8ffe072324ae1fb42627 /* PersonalDashboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalDashboard.swift; sourceTree = "<group>"; };
-		7A8399C3B3036C0CB60F9BB2 /* DevTools.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DevTools.swift; sourceTree = "<group>"; };
-		8D55CEE3939B2D9B671880AC /* EnhancedLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnhancedLoadingView.swift; sourceTree = "<group>"; };
+		7A8399C3B3036C0CB60F9BB2 /* DevTools.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DevTools.swift; path = flect/Utils/DevTools.swift; sourceTree = SOURCE_ROOT; };
+		8D55CEE3939B2D9B671880AC /* EnhancedLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EnhancedLoadingView.swift; path = flect/Components/EnhancedLoadingView.swift; sourceTree = SOURCE_ROOT; };
 		AF5E43272E15C04C00F1D345 /* flect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF5E43372E15C04F00F1D345 /* flectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF5E43412E15C04F00F1D345 /* flectUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flectUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF5E43452E15C04F00F1D345 /* flectUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = flectUITests.swift; sourceTree = "<group>"; };
 		AF5E43472E15C04F00F1D345 /* flectUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = flectUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		AFE8F0052E15DF8400AED8CC /* CardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
-		AFE8F0062E15DF8400AED8CC /* PrimaryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
+		AFE8F0052E15DF8400AED8CC /* CardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CardView.swift; path = flect/Components/CardView.swift; sourceTree = SOURCE_ROOT; };
+		AFE8F0062E15DF8400AED8CC /* PrimaryButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = PrimaryButton.swift; path = flect/Components/PrimaryButton.swift; sourceTree = SOURCE_ROOT; };
 		AFE8F00B2E15DF8400AED8CC /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		AFE8F0102E15DF8400AED8CC /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		AFE8F0102E15DF8400AED8CC /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Colors.swift; path = flect/Utils/Colors.swift; sourceTree = SOURCE_ROOT; };
 		AFE8F0192E15DF8400AED8CC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		AFE8F01A2E15DF8400AED8CC /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		AFE8F01B2E15DF8400AED8CC /* flectApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = flectApp.swift; sourceTree = "<group>"; };
+		AFE8F01A2E15DF8400AED8CC /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = flect/ContentView.swift; sourceTree = SOURCE_ROOT; };
+		AFE8F01B2E15DF8400AED8CC /* flectApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = flectApp.swift; path = flect/flectApp.swift; sourceTree = SOURCE_ROOT; };
 		AFE8F01F2E15DF8400AED8CC /* flectTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = flectTests.swift; sourceTree = "<group>"; };
 		B71069879E06A6EEA3753154 /* OnboardingFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingFlow.swift; path = flect/Views/OnboardingFlow.swift; sourceTree = SOURCE_ROOT; };
 		BA32DBE16549416D678A5058 /* Goals.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Goals.swift; path = flect/Models/Goals.swift; sourceTree = "<group>"; };
-		C143B1AC6B4B71C0285A2C78 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
-		C22D415485D66649F54B994A /* CheckInService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckInService.swift; sourceTree = "<group>"; };
-		CF89FA407027FAC0DB6991D3 /* InsightCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsightCard.swift; sourceTree = "<group>"; };
+		C143B1AC6B4B71C0285A2C78 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HomeView.swift; path = flect/Views/HomeView.swift; sourceTree = SOURCE_ROOT; };
+		C22D415485D66649F54B994A /* CheckInService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CheckInService.swift; path = flect/Services/CheckInService.swift; sourceTree = SOURCE_ROOT; };
+		CF89FA407027FAC0DB6991D3 /* InsightCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = InsightCard.swift; path = flect/Components/InsightCard.swift; sourceTree = SOURCE_ROOT; };
 		DE5A23D42E1D93650057C770 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DECBAE7C2E206AE0006165FA /* GoalOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalOnboardingView.swift; sourceTree = "<group>"; };
-		DECBAE7D2E206AE0006165FA /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
-		DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedGoalOnboardingView.swift; sourceTree = "<group>"; };
-		DECBAE862E208470006165FA /* MorningInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningInsightsView.swift; sourceTree = "<group>"; };
-		DECBAE8D2E2087FE006165FA /* Goals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goals.swift; sourceTree = "<group>"; };
-		DECBAE912E208807006165FA /* GoalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalService.swift; sourceTree = "<group>"; };
-		E04FC0F00F7C4FD2C68F42D0 /* CheckIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckIn.swift; sourceTree = "<group>"; };
-		EBEAC99620A771B7C6F76E5F /* AIChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AIChatView.swift; sourceTree = "<group>"; };
+		DECBAE7C2E206AE0006165FA /* GoalOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GoalOnboardingView.swift; path = flect/Views/GoalOnboardingView.swift; sourceTree = SOURCE_ROOT; };
+		DECBAE7D2E206AE0006165FA /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HistoryView.swift; path = flect/Views/HistoryView.swift; sourceTree = SOURCE_ROOT; };
+		DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EnhancedGoalOnboardingView.swift; path = flect/Views/EnhancedGoalOnboardingView.swift; sourceTree = SOURCE_ROOT; };
+		DECBAE862E208470006165FA /* MorningInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MorningInsightsView.swift; path = flect/Views/MorningInsightsView.swift; sourceTree = SOURCE_ROOT; };
+		DECBAE8D2E2087FE006165FA /* Goals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Goals.swift; path = flect/Models/Goals.swift; sourceTree = SOURCE_ROOT; };
+		DECBAE912E208807006165FA /* GoalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GoalService.swift; path = flect/Services/GoalService.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE3A2E2178F8000630D1 /* SprintService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SprintService.swift; path = flect/Services/SprintService.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE3B2E2178F8000630D1 /* TaskService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TaskService.swift; path = flect/Services/TaskService.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE422E217913000630D1 /* SprintCreationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SprintCreationView.swift; path = flect/Views/SprintCreationView.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE432E217913000630D1 /* SprintPlanningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SprintPlanningView.swift; path = flect/Views/SprintPlanningView.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE442E217913000630D1 /* SprintTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SprintTrackingView.swift; path = flect/Views/SprintTrackingView.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE452E217913000630D1 /* TaskManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TaskManagementView.swift; path = flect/Views/TaskManagementView.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE462E217913000630D1 /* WeeklyInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WeeklyInsightsView.swift; path = flect/Views/WeeklyInsightsView.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE6A2E218082000630D1 /* SharedTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SharedTypes.swift; path = flect/Models/SharedTypes.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE6B2E218082000630D1 /* Sprint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Sprint.swift; path = flect/Models/Sprint.swift; sourceTree = SOURCE_ROOT; };
+		DEEBCE722E21A932000630D1 /* MultiStepCheckInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MultiStepCheckInView.swift; path = flect/Views/MultiStepCheckInView.swift; sourceTree = SOURCE_ROOT; };
+		E04FC0F00F7C4FD2C68F42D0 /* CheckIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CheckIn.swift; path = flect/Models/CheckIn.swift; sourceTree = SOURCE_ROOT; };
+		EBEAC99620A771B7C6F76E5F /* AIChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AIChatView.swift; path = flect/Views/AIChatView.swift; sourceTree = SOURCE_ROOT; };
+		PERSONALITY001FILEREF123 /* PersonalityProfile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PersonalityProfile.swift; path = flect/Models/PersonalityProfile.swift; sourceTree = SOURCE_ROOT; };
+		PERSONALITY002FILEREF123 /* PersonalityQuizView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PersonalityQuizView.swift; path = flect/Views/PersonalityQuizView.swift; sourceTree = SOURCE_ROOT; };
+		TRIALPAYWALL01FILEREF123 /* TrialPaywallView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TrialPaywallView.swift; path = flect/Views/TrialPaywallView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,9 +238,7 @@
 				AF5E43442E15C04F00F1D345 /* flectUITests */,
 				AFE8F01D2E15DF8400AED8CC /* flect */,
 				AF5E43282E15C04C00F1D345 /* Products */,
-				1A527C3AE2D8B782DC405495 /* PersonalDashboard.swift */,
-				BA32DBE16549416D678A5058 /* Goals.swift */,
-				2ABA8C672F7EFFD1DC45B042 /* GoalService.swift */,
+				1A527C3AE2D8B782DC405495 /* PersonalDashboard.swift */
 			);
 			sourceTree = "<group>";
 		};
@@ -197,7 +249,6 @@
 				AF5E43372E15C04F00F1D345 /* flectTests.xctest */,
 				AF5E43412E15C04F00F1D345 /* flectUITests.xctest */,
 			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		AF5E43442E15C04F00F1D345 /* flectUITests */ = {
@@ -223,8 +274,11 @@
 		AFE8F00A2E15DF8400AED8CC /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				DEEBCE6A2E218082000630D1 /* SharedTypes.swift */,
+				DEEBCE6B2E218082000630D1 /* Sprint.swift */,
 				DECBAE8D2E2087FE006165FA /* Goals.swift */,
 				E04FC0F00F7C4FD2C68F42D0 /* CheckIn.swift */,
+				PERSONALITY001FILEREF123 /* PersonalityProfile.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -240,9 +294,12 @@
 		AFE8F00F2E15DF8400AED8CC /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				DECBAE912E208807006165FA /* GoalService.swift */,
 				C22D415485D66649F54B994A /* CheckInService.swift */,
+				DECBAE912E208807006165FA /* GoalService.swift */,
+				DE5A23D62E1D93650057C770 /* NotificationService.swift */,
 				61959A7F04534470F60A6A0C /* UserPreferencesService.swift */,
+				DEEBCE3A2E2178F8000630D1 /* SprintService.swift */,
+				DEEBCE3B2E2178F8000630D1 /* TaskService.swift */
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -251,8 +308,8 @@
 			isa = PBXGroup;
 			children = (
 				AFE8F0102E15DF8400AED8CC /* Colors.swift */,
-				04BB142738BDD51A22AF1EAE /* HapticManager.swift */,
 				7A8399C3B3036C0CB60F9BB2 /* DevTools.swift */,
+				04BB142738BDD51A22AF1EAE /* HapticManager.swift */
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -267,21 +324,29 @@
 		AFE8F01C2E15DF8400AED8CC /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				EBEAC99620A771B7C6F76E5F /* AIChatView.swift */,
+				0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */,
 				DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */,
-				DECBAE862E208470006165FA /* MorningInsightsView.swift */,
+				6A9FF1BC7043E3163D91A9DB /* FirstCheckInView.swift */,
 				DECBAE7C2E206AE0006165FA /* GoalOnboardingView.swift */,
 				DECBAE7D2E206AE0006165FA /* HistoryView.swift */,
-				6d9f8ffe072324ae1fb42627 /* PersonalDashboard.swift */,
-				4A2598EE87D03A28A69AF044 /* QuickCheckInView.swift */,
-				44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */,
-				0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */,
-				2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */,
 				C143B1AC6B4B71C0285A2C78 /* HomeView.swift */,
-				EBEAC99620A771B7C6F76E5F /* AIChatView.swift */,
-				034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */,
-				4D2E001531F4C959114D492E /* WelcomeView.swift */,
+				44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */,
+				2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */,
+				DECBAE862E208470006165FA /* MorningInsightsView.swift */,
+				DEEBCE722E21A932000630D1 /* MultiStepCheckInView.swift */,
 				B71069879E06A6EEA3753154 /* OnboardingFlow.swift */,
-				6A9FF1BC7043E3163D91A9DB /* FirstCheckInView.swift */,
+				1A527C3AE2D8B782DC405495 /* PersonalDashboard.swift */,
+				PERSONALITY002FILEREF123 /* PersonalityQuizView.swift */,
+				034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */,
+				4A2598EE87D03A28A69AF044 /* QuickCheckInView.swift */,
+				DEEBCE422E217913000630D1 /* SprintCreationView.swift */,
+				DEEBCE432E217913000630D1 /* SprintPlanningView.swift */,
+				DEEBCE442E217913000630D1 /* SprintTrackingView.swift */,
+				DEEBCE452E217913000630D1 /* TaskManagementView.swift */,
+				TRIALPAYWALL01FILEREF123 /* TrialPaywallView.swift */,
+				DEEBCE462E217913000630D1 /* WeeklyInsightsView.swift */,
+				4D2E001531F4C959114D492E /* WelcomeView.swift */
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -289,17 +354,16 @@
 		AFE8F01D2E15DF8400AED8CC /* flect */ = {
 			isa = PBXGroup;
 			children = (
-				AFE8F0072E15DF8400AED8CC /* Components */,
-				AFE8F00A2E15DF8400AED8CC /* Models */,
-				AFE8F00C2E15DF8400AED8CC /* Preview Content */,
-				AFE8F00F2E15DF8400AED8CC /* Services */,
-				AFE8F0112E15DF8400AED8CC /* Utils */,
-				AFE8F0132E15DF8400AED8CC /* ViewModels */,
-				AFE8F01C2E15DF8400AED8CC /* Views */,
 				AFE8F0192E15DF8400AED8CC /* Assets.xcassets */,
 				AFE8F01A2E15DF8400AED8CC /* ContentView.swift */,
 				AFE8F01B2E15DF8400AED8CC /* flectApp.swift */,
 				DE5A23D42E1D93650057C770 /* Info.plist */,
+				AFE8F00A2E15DF8400AED8CC /* Preview Content */,
+				AFE8F0042E15DF8400AED8CC /* Components */,
+				AFE8F0052E15DF8400AED8CC /* Models */,
+				AFE8F0062E15DF8400AED8CC /* Services */,
+				AFE8F0072E15DF8400AED8CC /* Utils */,
+				AFE8F0082E15DF8400AED8CC /* Views */
 			);
 			path = flect;
 			sourceTree = "<group>";
@@ -450,12 +514,21 @@
 			buildActionMask = 2147483647;
 			files = (
 				AFE8F0382E15DF8400AED8CC /* Colors.swift in Sources */,
+				DEEBCE402E2178F9000630D1 /* SprintService.swift in Sources */,
+				DEEBCE412E2178F9000630D1 /* TaskService.swift in Sources */,
 				DECBAE802E206AE0006165FA /* HistoryView.swift in Sources */,
 				DECBAE812E206AE0006165FA /* GoalOnboardingView.swift in Sources */,
 				AFE8F04C2E15DF8400AED8CC /* ContentView.swift in Sources */,
 				AFE8F0232E15DF8400AED8CC /* CardView.swift in Sources */,
 				DECBAE8F2E2087FE006165FA /* Goals.swift in Sources */,
 				AFE8F04D2E15DF8400AED8CC /* flectApp.swift in Sources */,
+				DEEBCE702E218082000630D1 /* SharedTypes.swift in Sources */,
+				DEEBCE712E218082000630D1 /* Sprint.swift in Sources */,
+				DEEBCE472E217913000630D1 /* SprintCreationView.swift in Sources */,
+				DEEBCE482E217913000630D1 /* SprintPlanningView.swift in Sources */,
+				DEEBCE492E217913000630D1 /* SprintTrackingView.swift in Sources */,
+				DEEBCE4A2E217913000630D1 /* TaskManagementView.swift in Sources */,
+				DEEBCE4B2E217913000630D1 /* WeeklyInsightsView.swift in Sources */,
 				AFE8F0262E15DF8400AED8CC /* PrimaryButton.swift in Sources */,
 				67CDB5065C59DF8D5D8FEE22 /* LaunchScreen.swift in Sources */,
 				640B99EBC320B4FD050A488B /* DaylioCheckInView.swift in Sources */,
@@ -480,6 +553,10 @@
 				F15DC28F356DDD0F35191C76 /* FirstCheckInView.swift in Sources */,
 				5A7CE3977AFB379A2F329B45 /* DevTools.swift in Sources */,
 				50A17AC52853E45F1686CA24 /* UserPreferencesService.swift in Sources */,
+				DEEBCE732E21A932000630D1 /* MultiStepCheckInView.swift in Sources */,
+				PERSONALITY001ABCDEF123456 /* PersonalityProfile.swift in Sources */,
+				PERSONALITY002ABCDEF123456 /* PersonalityQuizView.swift in Sources */,
+				TRIALPAYWALL01ABCDEF123456 /* TrialPaywallView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -496,6 +573,13 @@
 				DECBAE5A2E20631E006165FA /* PrimaryButton.swift in Sources */,
 				DECBAE5B2E20631E006165FA /* EnhancedLoadingView.swift in Sources */,
 				DECBAE5C2E20631E006165FA /* HapticManager.swift in Sources */,
+				DEEBCE3E2E2178F9000630D1 /* SprintService.swift in Sources */,
+				DEEBCE3F2E2178F9000630D1 /* TaskService.swift in Sources */,
+				DEEBCE512E217914000630D1 /* SprintCreationView.swift in Sources */,
+				DEEBCE522E217914000630D1 /* SprintPlanningView.swift in Sources */,
+				DEEBCE532E217914000630D1 /* SprintTrackingView.swift in Sources */,
+				DEEBCE542E217914000630D1 /* TaskManagementView.swift in Sources */,
+				DEEBCE552E217914000630D1 /* WeeklyInsightsView.swift in Sources */,
 				DECBAE5D2E20631E006165FA /* CheckIn.swift in Sources */,
 				DECBAE902E2087FE006165FA /* Goals.swift in Sources */,
 				DECBAE5E2E20631E006165FA /* InsightCard.swift in Sources */,
@@ -505,11 +589,17 @@
 				DECBAE8B2E208470006165FA /* EnhancedGoalOnboardingView.swift in Sources */,
 				DECBAE8C2E208470006165FA /* MorningInsightsView.swift in Sources */,
 				DECBAE922E208807006165FA /* GoalService.swift in Sources */,
+				DEEBCE6E2E218082000630D1 /* SharedTypes.swift in Sources */,
+				DEEBCE6F2E218082000630D1 /* Sprint.swift in Sources */,
 				DECBAE612E20631E006165FA /* DaylioCheckInView.swift in Sources */,
 				DECBAE752E206AC1006165FA /* (null) in Sources */,
 				DECBAE622E20631E006165FA /* MoodChartView.swift in Sources */,
 				DECBAE632E20631E006165FA /* HomeView.swift in Sources */,
 				DECBAE642E20631E006165FA /* CheckInService.swift in Sources */,
+				DEEBCE752E21A932000630D1 /* MultiStepCheckInView.swift in Sources */,
+				PERSONALITY003ABCDEF123456 /* PersonalityProfile.swift in Sources */,
+				PERSONALITY004ABCDEF123456 /* PersonalityQuizView.swift in Sources */,
+				TRIALPAYWALL02ABCDEF123456 /* TrialPaywallView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -526,6 +616,13 @@
 				DECBAE692E20631E006165FA /* PrimaryButton.swift in Sources */,
 				DECBAE6A2E20631E006165FA /* EnhancedLoadingView.swift in Sources */,
 				DECBAE6B2E20631E006165FA /* HapticManager.swift in Sources */,
+				DEEBCE3C2E2178F9000630D1 /* SprintService.swift in Sources */,
+				DEEBCE3D2E2178F9000630D1 /* TaskService.swift in Sources */,
+				DEEBCE4C2E217914000630D1 /* SprintCreationView.swift in Sources */,
+				DEEBCE4D2E217914000630D1 /* SprintPlanningView.swift in Sources */,
+				DEEBCE4E2E217914000630D1 /* SprintTrackingView.swift in Sources */,
+				DEEBCE4F2E217914000630D1 /* TaskManagementView.swift in Sources */,
+				DEEBCE502E217914000630D1 /* WeeklyInsightsView.swift in Sources */,
 				DECBAE6C2E20631E006165FA /* CheckIn.swift in Sources */,
 				DECBAE8E2E2087FE006165FA /* Goals.swift in Sources */,
 				DECBAE6D2E20631E006165FA /* InsightCard.swift in Sources */,
@@ -535,11 +632,17 @@
 				DECBAE872E208470006165FA /* EnhancedGoalOnboardingView.swift in Sources */,
 				DECBAE882E208470006165FA /* MorningInsightsView.swift in Sources */,
 				DECBAE942E208807006165FA /* GoalService.swift in Sources */,
+				DEEBCE6C2E218082000630D1 /* SharedTypes.swift in Sources */,
+				DEEBCE6D2E218082000630D1 /* Sprint.swift in Sources */,
 				DECBAE702E20631E006165FA /* DaylioCheckInView.swift in Sources */,
 				DECBAE762E206AC1006165FA /* (null) in Sources */,
 				DECBAE712E20631E006165FA /* MoodChartView.swift in Sources */,
 				DECBAE722E20631E006165FA /* HomeView.swift in Sources */,
 				DECBAE732E20631E006165FA /* CheckInService.swift in Sources */,
+				DEEBCE742E21A932000630D1 /* MultiStepCheckInView.swift in Sources */,
+				PERSONALITY005ABCDEF123456 /* PersonalityProfile.swift in Sources */,
+				PERSONALITY006ABCDEF123456 /* PersonalityQuizView.swift in Sources */,
+				TRIALPAYWALL03ABCDEF123456 /* TrialPaywallView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

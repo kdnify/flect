@@ -2,14 +2,12 @@ import SwiftUI
 
 struct OnboardingFlow: View {
     @State private var currentStep = 0
-    @State private var selectedGoals: Set<WellnessGoal> = []
-    @State private var selectedFrequency: CheckInFrequency = .daily
     @State private var notificationsEnabled = true
-    @State private var showingFirstCheckIn = false
+    @State private var showingGoalOnboarding = false
     @State private var showingPersonalityQuiz = false
     @Environment(\.dismiss) private var dismiss
     
-    let totalSteps = 4
+    let totalSteps = 2  // Reduced to 2: Notifications → Personality Quiz
     // Animation states
     @State private var animateStep = false
     
@@ -31,26 +29,14 @@ struct OnboardingFlow: View {
                     
                     // Content
                     TabView(selection: $currentStep) {
-                        goalSelectionView
+                        notificationView
                             .tag(0)
                             .opacity(animateStep ? 1 : 0)
                             .offset(y: animateStep ? 0 : 40)
                             .animation(.easeOut(duration: 0.5), value: animateStep)
                         
-                        frequencySelectionView
-                            .tag(1)
-                            .opacity(animateStep ? 1 : 0)
-                            .offset(y: animateStep ? 0 : 40)
-                            .animation(.easeOut(duration: 0.5), value: animateStep)
-                        
-                        notificationView
-                            .tag(2)
-                            .opacity(animateStep ? 1 : 0)
-                            .offset(y: animateStep ? 0 : 40)
-                            .animation(.easeOut(duration: 0.5), value: animateStep)
-                        
                         personalityIntroView
-                            .tag(3)
+                            .tag(1)
                             .opacity(animateStep ? 1 : 0)
                             .offset(y: animateStep ? 0 : 40)
                             .animation(.easeOut(duration: 0.5), value: animateStep)
@@ -79,13 +65,17 @@ struct OnboardingFlow: View {
             }
         }
         .navigationBarHidden(true)
-        .fullScreenCover(isPresented: $showingFirstCheckIn) {
-            FirstCheckInView()
+        .fullScreenCover(isPresented: $showingGoalOnboarding) {
+            GoalOnboardingView {
+                // Goal created successfully, complete onboarding
+                completeOnboarding()
+            }
         }
         .fullScreenCover(isPresented: $showingPersonalityQuiz) {
             PersonalityQuizView { profile in
                 showingPersonalityQuiz = false
-                completeOnboarding()
+                // After personality quiz, show goal onboarding
+                showingGoalOnboarding = true
             }
         }
     }
@@ -115,81 +105,11 @@ struct OnboardingFlow: View {
         }
     }
     
-    // MARK: - Goal Selection View
+    // MARK: - Goal Selection View (Removed)
+    // Goals will now be set in EnhancedGoalOnboardingView after personality quiz
     
-    private var goalSelectionView: some View {
-        VStack(spacing: 32) {
-            Spacer()
-            
-            VStack(spacing: 24) {
-                Text("What brings you to flect?")
-                    .font(.system(size: 28, weight: .light))
-                    .foregroundColor(.textMainHex)
-                    .multilineTextAlignment(.center)
-                    .tracking(0.5)
-                
-                Text("Select what you'd like to focus on")
-                    .font(.system(size: 16, weight: .regular))
-                    .foregroundColor(.mediumGreyHex)
-                    .multilineTextAlignment(.center)
-            }
-            
-            VStack(spacing: 16) {
-                ForEach(WellnessGoal.allCases, id: \.self) { goal in
-                    GoalSelectionCard(
-                        goal: goal,
-                        isSelected: selectedGoals.contains(goal)
-                    ) {
-                        if selectedGoals.contains(goal) {
-                            selectedGoals.remove(goal)
-                        } else {
-                            selectedGoals.insert(goal)
-                        }
-                        HapticManager.shared.lightImpact()
-                    }
-                }
-            }
-            
-            Spacer()
-        }
-        .padding(.horizontal, 32)
-    }
-    
-    // MARK: - Frequency Selection View
-    
-    private var frequencySelectionView: some View {
-        VStack(spacing: 32) {
-            Spacer()
-            
-            VStack(spacing: 24) {
-                Text("How often do you want to check in?")
-                    .font(.system(size: 28, weight: .light))
-                    .foregroundColor(.textMainHex)
-                    .multilineTextAlignment(.center)
-                    .tracking(0.5)
-                
-                Text("You can always change this later")
-                    .font(.system(size: 16, weight: .regular))
-                    .foregroundColor(.mediumGreyHex)
-                    .multilineTextAlignment(.center)
-            }
-            
-            VStack(spacing: 16) {
-                ForEach(CheckInFrequency.allCases, id: \.self) { frequency in
-                    FrequencySelectionCard(
-                        frequency: frequency,
-                        isSelected: selectedFrequency == frequency
-                    ) {
-                        selectedFrequency = frequency
-                        HapticManager.shared.lightImpact()
-                    }
-                }
-            }
-            
-            Spacer()
-        }
-        .padding(.horizontal, 32)
-    }
+    // MARK: - Frequency Selection Removed
+    // Frequency selection moved to personality quiz question 5
     
     // MARK: - Notification View
     
@@ -440,7 +360,6 @@ struct OnboardingFlow: View {
                 .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 4)
             }
             .buttonStyle(PlainButtonStyle())
-            .disabled(currentStep == 0 && selectedGoals.isEmpty)
         }
     }
     
@@ -450,124 +369,28 @@ struct OnboardingFlow: View {
         // Save preferences
         UserDefaults.standard.set(true, forKey: "hasCompletedOnboarding")
         
-        // Save selected goals
-        let goalStrings = selectedGoals.map { $0.rawValue }
-        UserDefaults.standard.set(goalStrings, forKey: "selectedWellnessGoals")
-        
-        // Save frequency
-        UserDefaults.standard.set(selectedFrequency.rawValue, forKey: "checkInFrequency")
-        
         // Save notification preference
         UserDefaults.standard.set(notificationsEnabled, forKey: "notificationsEnabled")
         
-        // Show first check-in
-        showingFirstCheckIn = true
+        // Post notification to complete onboarding (ContentView will handle this)
+        NotificationCenter.default.post(name: .onboardingCompleted, object: nil)
+        
+        // Note: Goals will be set in GoalOnboardingView
+        // First check-in will be available from the main app after goal setup
+        
+        // Dismiss the onboarding flow to return to main app
+        dismiss()
     }
 }
 
 // MARK: - Supporting Types
 // Enums are now defined in UserPreferencesService.swift
 
-// MARK: - Goal Selection Card
+// MARK: - Goal Selection Card (Removed)
+// Goals are now handled in EnhancedGoalOnboardingView
 
-struct GoalSelectionCard: View {
-    let goal: WellnessGoal
-    let isSelected: Bool
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 16) {
-                // Icon
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(LinearGradient(
-                        colors: goal.gradient,
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ))
-                    .frame(width: 44, height: 44)
-                    .overlay(
-                        Image(systemName: goal.icon)
-                            .font(.system(size: 20, weight: .medium))
-                            .foregroundColor(.white)
-                    )
-                
-                // Content
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(goal.rawValue)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.textMainHex)
-                    
-                    Text(goal.description)
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundColor(.mediumGreyHex)
-                }
-                
-                Spacer()
-                
-                // Selection indicator
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 20, weight: .medium))
-                    .foregroundColor(isSelected ? .blue : .gray.opacity(0.5))
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .background(
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(isSelected ? Color.blue.opacity(0.08) : Color.cardBackgroundHex)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16)
-                            .stroke(isSelected ? Color.blue.opacity(0.3) : Color.gray.opacity(0.1), lineWidth: 1)
-                    )
-            )
-            .shadow(color: isSelected ? Color.blue.opacity(0.08) : .clear, radius: 8, x: 0, y: 2)
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
-// MARK: - Frequency Selection Card
-
-struct FrequencySelectionCard: View {
-    let frequency: CheckInFrequency
-    let isSelected: Bool
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 16) {
-                // Selection indicator
-                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 20, weight: .medium))
-                    .foregroundColor(isSelected ? .blue : .gray.opacity(0.5))
-                
-                // Content
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(frequency.rawValue)
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.textMainHex)
-                    
-                    Text(frequency.description)
-                        .font(.system(size: 14, weight: .regular))
-                        .foregroundColor(.mediumGreyHex)
-                }
-                
-                Spacer()
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 16)
-            .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(isSelected ? Color.blue.opacity(0.05) : Color.cardBackgroundHex)
-                    .stroke(
-                        isSelected ? Color.blue.opacity(0.3) : Color.gray.opacity(0.1),
-                        lineWidth: 1
-                    )
-            )
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
+// MARK: - Frequency Selection Card (Removed)
+// Frequency selection moved to personality quiz
 
 #Preview {
     OnboardingFlow()

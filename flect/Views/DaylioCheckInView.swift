@@ -14,25 +14,48 @@ struct DaylioCheckInView: View {
     // Brain dump state
     @State private var dailyBrainDump = DailyBrainDump()
     
+    // Modern mood levels to match FirstCheckInView design
+    private let modernMoodLevels = [
+        ReflectionMoodLevel(name: "Rough", color: Color.red.opacity(0.6), description: "Challenging day"),
+        ReflectionMoodLevel(name: "Okay", color: Color.orange.opacity(0.6), description: "Getting through"),
+        ReflectionMoodLevel(name: "Neutral", color: Color.gray.opacity(0.6), description: "Balanced state"),
+        ReflectionMoodLevel(name: "Good", color: Color.blue.opacity(0.6), description: "Positive energy"),
+        ReflectionMoodLevel(name: "Great", color: Color.green.opacity(0.6), description: "Thriving today")
+    ]
+    
+    @State private var selectedMoodIndex = 2 // Start with neutral
+    
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: 32) {
-                    headerSection
-                    moodSelectionSection
-                    activitiesSection
-                    
-                    // Goal progress section - only show if user has active goals
-                    if !goalService.activeGoals.isEmpty {
-                        goalProgressSection
+        ZStack {
+            // Background
+            Color.backgroundHex
+                .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                // Header
+                headerSection
+                
+                // Main content
+                ScrollView {
+                    VStack(spacing: 48) {
+                        // Modern mood selection
+                        modernMoodSelectionSection
+                        
+                        // Activities section
+                        modernActivitiesSection
+                        
+                        // Goal progress section (if user has active goals)
+                        if !goalService.activeGoals.isEmpty {
+                            goalProgressSection
+                        }
+                        
+                        // Submit section
+                        modernSubmitSection
                     }
-                    submitSection
-                    Spacer(minLength: 50)
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 50)
                 }
-                .padding(.horizontal, 20)
             }
-            .background(Color.backgroundHex)
-            .navigationBarHidden(true)
         }
         .sheet(isPresented: $showingSuccess) {
             if let checkIn = savedCheckIn {
@@ -47,102 +70,175 @@ struct DaylioCheckInView: View {
         }
         .navigationBarHidden(true)
         .onAppear {
-            // Initialize any needed state here
+            // Map modern mood to old MoodLevel for compatibility
+            updateSelectedMood()
         }
     }
     
     // MARK: - Header Section
     
     private var headerSection: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 20) {
             HStack {
                 Button("Close") {
                     dismiss()
                 }
+                .font(.system(size: 16, weight: .regular))
                 .foregroundColor(.mediumGreyHex)
-                .font(.subheadline)
                 
                 Spacer()
                 
                 Text(currentDateString)
-                    .font(.headline)
-                    .fontWeight(.semibold)
+                    .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.textMainHex)
                 
                 Spacer()
                 
-                Button("🧪") {
-                    // Remove any debug or UI calls to resetToSampleData
-                }
-                .foregroundColor(.accentHex)
-                .font(.title2)
+                // Remove debug button for cleaner design
+                Text("")
+                    .frame(width: 40) // Balance the layout
             }
+            .padding(.horizontal, 24)
+            .padding(.top, 16)
             
-            Text("How was your day?")
-                .font(.title)
-                .fontWeight(.bold)
-                .foregroundColor(.textMainHex)
+            VStack(spacing: 12) {
+                Text("Daily Reflection")
+                    .font(.system(size: 32, weight: .ultraLight, design: .default))
+                    .foregroundColor(.textMainHex)
+                    .tracking(0.5)
+                
+                Text("Take a moment to reflect on your day")
+                    .font(.system(size: 16, weight: .regular))
+                    .foregroundColor(.mediumGreyHex)
+            }
+            .padding(.horizontal, 24)
+            
+            Divider()
+                .background(Color.mediumGreyHex.opacity(0.2))
         }
     }
     
-    // MARK: - Mood Selection
+    // MARK: - Modern Mood Selection
     
-    private var moodSelectionSection: some View {
-        VStack(spacing: 20) {
-            Text("Your mood")
-                .font(.headline)
-                .foregroundColor(.textMainHex)
+    private var modernMoodSelectionSection: some View {
+        VStack(spacing: 32) {
+            VStack(spacing: 12) {
+                Text("How are you feeling right now?")
+                    .font(.system(size: 24, weight: .medium))
+                    .foregroundColor(.textMainHex)
+                    .tracking(0.3)
+                
+                Text("Tap the feeling that best describes you today")
+                    .font(.system(size: 16, weight: .regular))
+                    .foregroundColor(.mediumGreyHex)
+                    .multilineTextAlignment(.center)
+            }
             
-            HStack(spacing: 0) {
-                ForEach(MoodLevel.allCases, id: \.self) { mood in
+            // Sophisticated mood selection
+            VStack(spacing: 20) {
+                ForEach(Array(modernMoodLevels.enumerated()), id: \.offset) { index, mood in
                     Button(action: {
-                        selectedMood = mood
-                        HapticManager.shared.selection()
-                    }) {
-                        VStack(spacing: 8) {
-                            Circle()
-                                .fill(mood.color)
-                                .frame(width: selectedMood == mood ? 50 : 40, height: selectedMood == mood ? 50 : 40)
-                                .overlay(
-                                    Text(mood.emoji)
-                                        .font(.system(size: selectedMood == mood ? 28 : 22))
-                                )
-                                .shadow(color: selectedMood == mood ? mood.color.opacity(0.4) : .clear, radius: 8)
-                            
-                            Text(mood.name)
-                                .font(.caption)
-                                .fontWeight(selectedMood == mood ? .semibold : .regular)
-                                .foregroundColor(selectedMood == mood ? mood.color : .mediumGreyHex)
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            selectedMoodIndex = index
+                            updateSelectedMood()
                         }
-                        .scaleEffect(selectedMood == mood ? 1.1 : 1.0)
+                        HapticManager.shared.lightImpact()
+                    }) {
+                        HStack(spacing: 20) {
+                            // Mood indicator circle
+                            ZStack {
+                                Circle()
+                                    .fill(mood.color)
+                                    .frame(width: selectedMoodIndex == index ? 50 : 40, height: selectedMoodIndex == index ? 50 : 40)
+                                    .overlay(
+                                        Circle()
+                                            .stroke(mood.color.opacity(0.3), lineWidth: selectedMoodIndex == index ? 3 : 1)
+                                            .frame(width: selectedMoodIndex == index ? 60 : 48, height: selectedMoodIndex == index ? 60 : 48)
+                                    )
+                                    .shadow(color: mood.color.opacity(0.3), radius: selectedMoodIndex == index ? 12 : 6, x: 0, y: selectedMoodIndex == index ? 6 : 3)
+                                
+                                if selectedMoodIndex == index {
+                                    Circle()
+                                        .fill(mood.color.opacity(0.2))
+                                        .frame(width: 70, height: 70)
+                                        .blur(radius: 8)
+                                }
+                            }
+                            
+                            // Mood text
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(mood.name)
+                                    .font(.system(size: 18, weight: selectedMoodIndex == index ? .semibold : .medium))
+                                    .foregroundColor(.textMainHex)
+                                
+                                Text(mood.description)
+                                    .font(.system(size: 14, weight: .regular))
+                                    .foregroundColor(.mediumGreyHex)
+                            }
+                            
+                            Spacer()
+                            
+                            // Selection indicator
+                            if selectedMoodIndex == index {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 20, weight: .medium))
+                                    .foregroundColor(mood.color)
+                            }
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 16)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(selectedMoodIndex == index ? mood.color.opacity(0.08) : Color.clear)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(selectedMoodIndex == index ? mood.color.opacity(0.3) : Color.mediumGreyHex.opacity(0.15), lineWidth: 1)
+                                )
+                        )
                     }
-                    .frame(maxWidth: .infinity)
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
-            .animation(.spring(response: 0.3, dampingFraction: 0.8), value: selectedMood)
         }
     }
     
-    // MARK: - Activities Section
+    // MARK: - Modern Activities Section
     
-    private var activitiesSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("What did you do?")
-                .font(.headline)
-                .foregroundColor(.textMainHex)
+    private var modernActivitiesSection: some View {
+        VStack(spacing: 24) {
+            VStack(spacing: 8) {
+                Text("What did you do today?")
+                    .font(.system(size: 20, weight: .medium))
+                    .foregroundColor(.textMainHex)
+                
+                Text("Select activities that were part of your day")
+                    .font(.system(size: 14, weight: .regular))
+                    .foregroundColor(.mediumGreyHex)
+            }
             
-            Text("Select all that apply")
-                .font(.subheadline)
-                .foregroundColor(.mediumGreyHex)
-            
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 3), spacing: 12) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 12) {
                 ForEach(Activity.allCases, id: \.self) { activity in
-                    ActivityTag(
-                        activity: activity,
-                        isSelected: selectedActivities.contains(activity)
-                    ) {
+                    Button(action: {
                         toggleActivity(activity)
+                        HapticManager.shared.lightImpact()
+                    }) {
+                        Text(activity.name)
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(selectedActivities.contains(activity) ? .white : .textMainHex)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .background(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .fill(selectedActivities.contains(activity) ? 
+                                          LinearGradient(colors: [modernMoodLevels[selectedMoodIndex].color, modernMoodLevels[selectedMoodIndex].color.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing) : 
+                                          LinearGradient(colors: [Color.backgroundHex, Color.backgroundHex], startPoint: .topLeading, endPoint: .bottomTrailing))
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 20)
+                                            .stroke(selectedActivities.contains(activity) ? Color.clear : Color.mediumGreyHex.opacity(0.3), lineWidth: 1)
+                                    )
+                            )
                     }
+                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }
@@ -158,56 +254,67 @@ struct DaylioCheckInView: View {
         )
     }
     
-
+    // MARK: - Modern Submit Section
     
-    // MARK: - Submit Section
-    
-    private var submitSection: some View {
-        VStack(spacing: 12) {
+    private var modernSubmitSection: some View {
+        VStack(spacing: 16) {
             if isSubmitting {
                 HStack(spacing: 12) {
                     ProgressView()
                         .scaleEffect(0.8)
-                    Text("Saving...")
-                        .font(.subheadline)
+                        .accentColor(modernMoodLevels[selectedMoodIndex].color)
+                    Text("Saving your reflection...")
+                        .font(.system(size: 16, weight: .regular))
                         .foregroundColor(.mediumGreyHex)
                 }
-                .padding(.vertical, 16)
+                .padding(.vertical, 18)
             } else {
                 Button(action: submitCheckIn) {
-                    HStack {
-                        Text("Done")
-                            .font(.headline)
-                            .fontWeight(.semibold)
+                    HStack(spacing: 12) {
+                        Text("Complete Reflection")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(.white)
                         
-                        Spacer()
-                        
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.title2)
+                        Image(systemName: "arrow.right")
+                            .font(.system(size: 16, weight: .medium))
+                            .foregroundColor(.white)
                     }
-                    .foregroundColor(.white)
-                    .padding(.vertical, 16)
-                    .padding(.horizontal, 24)
-                    .background(selectedMood.color)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 18)
+                    .background(
+                        LinearGradient(
+                            colors: [
+                                modernMoodLevels[selectedMoodIndex].color.opacity(0.9),
+                                modernMoodLevels[selectedMoodIndex].color.opacity(0.7)
+                            ],
+                            startPoint: .leading,
+                            endPoint: .trailing
+                        )
+                    )
                     .cornerRadius(16)
+                    .shadow(color: modernMoodLevels[selectedMoodIndex].color.opacity(0.3), radius: 12, x: 0, y: 6)
                 }
-                .animation(.easeInOut(duration: 0.2), value: selectedMood)
+                .buttonStyle(PlainButtonStyle())
             }
             
-            // Quick stats
-            HStack {
-                Text("\(selectedActivities.count) activities")
-                    .font(.caption)
-                    .foregroundColor(.mediumGreyHex)
-                
-                Spacer()
-                
-                if !dailyBrainDump.brainDumpContent.isEmpty {
-                    Text("\(dailyBrainDump.wordCount) words")
-                        .font(.caption)
-                        .foregroundColor(.mediumGreyHex)
-                }
-            }
+            // Activity count
+            Text("\(selectedActivities.count) activities selected")
+                .font(.system(size: 14, weight: .regular))
+                .foregroundColor(.mediumGreyHex)
+        }
+    }
+    
+    // MARK: - Helper Functions
+    
+    private func updateSelectedMood() {
+        // Map modern mood index to old MoodLevel enum for compatibility
+        switch selectedMoodIndex {
+        case 0: selectedMood = .awful
+        case 1: selectedMood = .bad
+        case 2: selectedMood = .neutral
+        case 3: selectedMood = .good
+        case 4: selectedMood = .amazing
+        default: selectedMood = .neutral
         }
     }
     
@@ -216,13 +323,13 @@ struct DaylioCheckInView: View {
     private var currentDateString: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d"
-        return formatter.string(from: Date())
+        return formatter.string(from: CheckInService.shared.now) // Use simulated date
     }
     
     // MARK: - Actions
     
     private func toggleActivity(_ activity: Activity) {
-        HapticManager.shared.selection()
+        HapticManager.shared.lightImpact()
         
         if selectedActivities.contains(activity) {
             selectedActivities.remove(activity)
@@ -238,14 +345,14 @@ struct DaylioCheckInView: View {
         Task {
             do {
                 // Convert to our existing format
-                let moodEmoji = selectedMood.name // Use mood name instead of emoji
+                let moodName = selectedMood.name // Use mood name instead of emoji
                 let happyThing = selectedActivities.map { $0.name }.joined(separator: ", ")
                 let improveThing = dailyBrainDump.brainDumpContent.isEmpty ? "No specific improvements noted" : dailyBrainDump.brainDumpContent
                 
                 let checkIn = try await checkInService.submitCheckIn(
                     happyThing: happyThing,
                     improveThing: improveThing,
-                    moodEmoji: moodEmoji
+                    moodName: moodName
                 )
                 
                 // Save brain dump if there's content
@@ -355,6 +462,8 @@ enum Activity: String, CaseIterable {
         case .learning: return "book"
         }
     }
+    
+
 }
 
 // MARK: - Activity Tag Component

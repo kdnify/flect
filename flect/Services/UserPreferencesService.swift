@@ -16,6 +16,30 @@ class UserPreferencesService: ObservableObject {
         }
     }
     
+    // MARK: - Trial & Subscription
+    
+    @Published var isTrialActive: Bool {
+        didSet {
+            UserDefaults.standard.set(isTrialActive, forKey: "isTrialActive")
+        }
+    }
+    
+    @Published var trialStartDate: Date? {
+        didSet {
+            if let date = trialStartDate {
+                UserDefaults.standard.set(date, forKey: "trialStartDate")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "trialStartDate")
+            }
+        }
+    }
+    
+    @Published var isPremiumSubscriber: Bool {
+        didSet {
+            UserDefaults.standard.set(isPremiumSubscriber, forKey: "isPremiumSubscriber")
+        }
+    }
+    
     @Published var personalityProfile: PersonalityProfile? {
         didSet {
             if let profile = personalityProfile {
@@ -30,6 +54,11 @@ class UserPreferencesService: ObservableObject {
     
     private init() {
         hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
+        
+        // Initialize trial & subscription
+        self.isTrialActive = UserDefaults.standard.bool(forKey: "isTrialActive")
+        self.trialStartDate = UserDefaults.standard.object(forKey: "trialStartDate") as? Date
+        self.isPremiumSubscriber = UserDefaults.standard.bool(forKey: "isPremiumSubscriber")
         
         // Load personality profile
         if let data = UserDefaults.standard.data(forKey: "personalityProfile"),
@@ -267,6 +296,52 @@ class UserPreferencesService: ObservableObject {
         case .general:
             return "How are you feeling today?"
         }
+    }
+    
+    // MARK: - Trial Management
+    
+    func startTrial() {
+        trialStartDate = Date()
+        isTrialActive = true
+        isPremiumSubscriber = false
+    }
+    
+    func endTrial() {
+        isTrialActive = false
+        // Don't clear trialStartDate so we remember they used their trial
+    }
+    
+    func activatePremiumSubscription() {
+        isPremiumSubscriber = true
+        isTrialActive = false
+    }
+    
+    var trialDaysRemaining: Int {
+        guard let startDate = trialStartDate, isTrialActive else { return 0 }
+        
+        let calendar = Calendar.current
+        let daysSinceStart = calendar.dateComponents([.day], from: startDate, to: Date()).day ?? 0
+        let daysRemaining = max(0, 7 - daysSinceStart)
+        
+        // Auto-expire trial if time is up
+        if daysRemaining == 0 && isTrialActive {
+            endTrial()
+        }
+        
+        return daysRemaining
+    }
+    
+    var hasUsedTrial: Bool {
+        return trialStartDate != nil
+    }
+    
+    var hasAccessToPremiumFeatures: Bool {
+        return isPremiumSubscriber || (isTrialActive && trialDaysRemaining > 0)
+    }
+    
+    var trialExpiryDate: Date? {
+        guard let startDate = trialStartDate else { return nil }
+        return Calendar.current.date(byAdding: .day, value: 7, to: startDate)
     }
 }
 

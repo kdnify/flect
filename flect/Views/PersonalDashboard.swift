@@ -226,14 +226,14 @@ struct PersonalDashboard: View {
                             .foregroundColor(.mediumGreyHex)
                         ZStack {
                             Circle()
-                                .fill(Color.moodColor(for: todaysCheckIn.moodEmoji))
+                                .fill(Color.moodColor(for: todaysCheckIn.moodName))
                                 .frame(width: 44, height: 44)
-                                .shadow(color: Color.moodColor(for: todaysCheckIn.moodEmoji).opacity(0.25), radius: 12, x: 0, y: 4)
+                                .shadow(color: Color.moodColor(for: todaysCheckIn.moodName).opacity(0.25), radius: 12, x: 0, y: 4)
                                 .overlay(
                                     Circle()
                                         .stroke(Color.white.opacity(0.7), lineWidth: 2)
                                 )
-                                .accessibilityLabel("Today's mood: \(todaysCheckIn.moodEmoji)")
+                                .accessibilityLabel("Today's mood: \(todaysCheckIn.moodName)")
                         }
                         .onTapGesture {
                             // Optionally show a tooltip or haptic
@@ -586,7 +586,7 @@ struct PersonalDashboard: View {
         
         let checkInsText = checkInService.checkIns.map { checkIn in
             """
-            \(formatter.string(from: checkIn.date)) \(checkIn.moodEmoji)
+            \(formatter.string(from: checkIn.date)) \(checkIn.moodName)
             Happy: \(checkIn.happyThing)
             Improve: \(checkIn.improveThing)
             \(checkIn.aiResponse ?? "No AI response")
@@ -619,13 +619,13 @@ struct PersonalDashboard: View {
                 let isToday = Calendar.current.isDate(date, inSameDayAs: Date())
                 ZStack {
                     Circle()
-                        .fill(Color.moodColor(for: checkIn?.moodEmoji ?? ""))
+                        .fill(Color.moodColor(for: checkIn?.moodName ?? ""))
                         .frame(width: 28, height: 28)
-                        .shadow(color: Color.moodColor(for: checkIn?.moodEmoji ?? "").opacity(0.15), radius: 6, x: 0, y: 2)
+                        .shadow(color: Color.moodColor(for: checkIn?.moodName ?? "").opacity(0.15), radius: 6, x: 0, y: 2)
                         .overlay(
                             Circle().stroke(Color.borderColorHex, lineWidth: 1)
                         )
-                        .accessibilityLabel("Mood: \(checkIn?.moodEmoji ?? "None")")
+                        .accessibilityLabel("Mood: \(checkIn?.moodName ?? "None")")
                     if isToday {
                         Circle()
                             .stroke(Color.accentHex, lineWidth: 3)

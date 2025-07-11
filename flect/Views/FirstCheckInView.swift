@@ -389,13 +389,13 @@ struct FirstCheckInView: View {
     // MARK: - Functions
     
     private func submitFirstCheckIn() {
-        // Create first check-in
+        // Create first check-in with simulated date (now) - NEVER use real Date()
         let checkIn = DailyCheckIn(
             id: UUID(),
-            date: Date(),
+            date: CheckInService.shared.now, // Use simulated date from CheckInService
             happyThing: happyThing.isEmpty ? "Starting my flect journey!" : happyThing,
             improveThing: "", // Empty for first check-in
-            moodEmoji: moodLevels[selectedMood].name
+            moodName: moodLevels[selectedMood].name
         )
         
         // Save to CheckInService

@@ -4,6 +4,7 @@ struct PersonalityQuizView: View {
     @State private var currentQuestionIndex = 0
     @State private var answers: [Int: Int] = [:]
     @State private var showingResult = false
+    @State private var showingPaywall = false
     @State private var personalityProfile: PersonalityProfile?
     @State private var animateProgress = false
     @State private var animateQuestionChange = false
@@ -58,6 +59,19 @@ struct PersonalityQuizView: View {
         .ignoresSafeArea(.all, edges: .top)
         .onAppear {
             animateProgress = true
+        }
+        .fullScreenCover(isPresented: $showingPaywall) {
+            TrialPaywallView(
+                onStartTrial: {
+                    userPreferences.startTrial()
+                    showingPaywall = false
+                    completeQuizFlow()
+                },
+                onSkip: {
+                    showingPaywall = false
+                    completeQuizFlow()
+                }
+            )
         }
     }
     
@@ -198,7 +212,7 @@ struct PersonalityQuizView: View {
             
             // Continue button
             Button(action: completeQuiz) {
-                Text("Continue to flect")
+                Text("Unlock Your Personalized Experience")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -255,9 +269,22 @@ struct PersonalityQuizView: View {
     private func completeQuiz() {
         guard let profile = personalityProfile else { return }
         
+        // Save personality profile first
         userPreferences.savePersonalityProfile(profile)
+        HapticManager.shared.success()
+        
+        // Show paywall unless they already have premium access or used trial
+        if !userPreferences.hasAccessToPremiumFeatures && !userPreferences.hasUsedTrial {
+            showingPaywall = true
+        } else {
+            // Skip paywall if they already have access or used trial
+            completeQuizFlow()
+        }
+    }
+    
+    private func completeQuizFlow() {
+        guard let profile = personalityProfile else { return }
         onCompleted(profile)
-        HapticManager.shared.successImpact()
     }
 }
 
@@ -274,7 +301,7 @@ struct PersonalityAnswerCard: View {
             HStack(spacing: 16) {
                 // Selection indicator
                 Circle()
-                    .stroke(isSelected ? Color.accentHex : Color.lightGreyHex, lineWidth: 2)
+                    .stroke(isSelected ? Color.accentHex : Color.mediumGreyHex, lineWidth: 2)
                     .fill(isSelected ? Color.accentHex : Color.clear)
                     .frame(width: 20, height: 20)
                     .overlay(
@@ -318,7 +345,7 @@ struct CustomProgressViewStyle: ProgressViewStyle {
             ZStack(alignment: .leading) {
                 // Background
                 RoundedRectangle(cornerRadius: 4)
-                    .fill(Color.lightGreyHex.opacity(0.3))
+                    .fill(Color.mediumGreyHex.opacity(0.3))
                     .frame(height: 4)
                 
                 // Progress

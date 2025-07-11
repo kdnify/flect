@@ -5,7 +5,7 @@ struct QuickCheckInView: View {
     @StateObject private var checkInService = CheckInService.shared
     @State private var happyThing: String = ""
     @State private var improveThing: String = ""
-    @State private var selectedMood: String = "😌"
+    @State private var selectedMood: String = "Neutral"
     @State private var isSubmitting = false
     @State private var showingSuccess = false
     @State private var savedCheckIn: DailyCheckIn?
@@ -92,7 +92,7 @@ struct QuickCheckInView: View {
                 HStack(spacing: 20) {
                     ForEach(moodEmojis, id: \.self) { emoji in
                         Button(action: {
-                            selectedMood = emoji
+                            selectedMood = moodNameFromEmoji(emoji)
                             HapticManager.shared.selection()
                             withAnimation(.spring(response: 0.4, dampingFraction: 0.5)) {
                                 moodAnimation[emoji] = true
@@ -227,7 +227,7 @@ struct QuickCheckInView: View {
                 let checkIn = try await checkInService.submitCheckIn(
                     happyThing: happyThing.trimmingCharacters(in: .whitespacesAndNewlines),
                     improveThing: improveThing.trimmingCharacters(in: .whitespacesAndNewlines),
-                    moodEmoji: moodNameFromEmoji(selectedMood) // Convert emoji to mood name
+                    moodName: selectedMood // Use moodName directly
                 )
                 
                 await MainActor.run {

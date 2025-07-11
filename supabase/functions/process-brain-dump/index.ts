@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,40 +6,27 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  console.log('🚀 Function started, method:', req.method)
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    console.log('✅ CORS preflight handled')
     return new Response('ok', { headers: corsHeaders })
   }
 
   try {
-    // Initialize Supabase client
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
-
+    console.log('📖 Parsing request body...')
     // Parse request body
     const { originalText } = await req.json()
+    console.log('📝 Original text received:', originalText?.substring(0, 100) + '...')
     
-    if (!originalText || originalText.trim().length === 0) {
-      throw new Error('Original text is required')
+    if (!originalText) {
+      throw new Error('No original text provided')
     }
 
-    // Create initial journal entry with pending status
-    const { data: journalEntry, error: insertError } = await supabaseClient
-      .from('journal_entries')
-      .insert({
-        original_text: originalText,
-        processing_status: 'processing'
-      })
-      .select()
-      .single()
-
-    if (insertError) {
-      throw new Error(`Failed to create journal entry: ${insertError.message}`)
-    }
-
-    // Process with OpenAI
+    console.log('🤖 Calling OpenAI API...')
+    
+    // Call OpenAI API
     const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -52,33 +38,46 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are an AI assistant that helps process unstructured journal entries. 
+            content: `You are an AI assistant that extracts actionable tasks from brain dump text. 
             
-            Your task is to:
-            1. Transform the raw text into a well-structured, coherent journal entry
-            2. Create an appropriate title (max 60 characters)
-            3. Analyze the overall mood/emotion (one word: happy, sad, stressed, excited, neutral, anxious, grateful, frustrated, etc.)
-            4. Extract any actionable tasks mentioned in the text
+            Your job is to:
+            1. Read the user's brain dump text
+            2. Extract specific, actionable tasks 
+            3. Improve and clarify task descriptions to be concrete and actionable
+            4. Assign appropriate priority levels (high, medium, low)
+            5. Extract and parse due dates from natural language (tomorrow, next week, Friday, etc.)
+            6. Return the results in the exact JSON format specified
             
-            Return your response as a JSON object with this exact structure:
+            Guidelines:
+            - Extract only clear, actionable tasks (not general thoughts or observations)
+            - Make task titles concise but descriptive (max 50 characters)
+            - Make descriptions specific and actionable (what exactly needs to be done)
+            - Assign priority based on urgency and importance mentioned in the text
+            - Use present tense for task titles ("Walk the dog", not "Walking the dog")
+            - Parse natural language dates: "tomorrow", "next week", "Friday", "in 3 days", "by Monday", "end of month"
+            - Convert dates to ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ) using current date as reference
+            - If no specific date mentioned, leave due_date as null
+            - Consider today as ${new Date().toISOString().split('T')[0]}
+            
+            Return response in this exact JSON format:
             {
-              "title": "Brief descriptive title",
-              "processedContent": "Well-structured journal entry that maintains the original meaning but improves clarity and flow",
-              "mood": "single_word_mood",
+              "id": "generated-id",
+              "title": "Enhanced title for the brain dump", 
               "tasks": [
                 {
-                  "title": "Task title",
-                  "description": "Brief task description",
-                  "priority": "high|medium|low"
+                  "id": "task-1",
+                  "title": "Concise task title",
+                  "description": "Detailed, actionable description of what needs to be done",
+                  "priority": "high|medium|low",
+                  "is_completed": false,
+                  "due_date": "2024-01-15T00:00:00Z or null if no date mentioned"
                 }
               ]
-            }
-            
-            Make the processed content feel natural and personal, not robotic. Keep the original voice and emotions.`
+            }`
           },
           {
             role: 'user',
-            content: originalText
+            content: `Extract actionable tasks from this brain dump: "${originalText}"`
           }
         ],
         temperature: 0.7,
@@ -87,89 +86,57 @@ serve(async (req) => {
     })
 
     if (!openaiResponse.ok) {
+      console.error('❌ OpenAI API error:', openaiResponse.status, openaiResponse.statusText)
+      const errorText = await openaiResponse.text()
+      console.error('❌ Error details:', errorText)
       throw new Error(`OpenAI API error: ${openaiResponse.status}`)
     }
 
     const openaiData = await openaiResponse.json()
-    const aiResponse = JSON.parse(openaiData.choices[0].message.content)
-
-    // Update journal entry with processed content
-    const { error: updateError } = await supabaseClient
-      .from('journal_entries')
-      .update({
-        processed_content: aiResponse.processedContent,
-        title: aiResponse.title,
-        mood: aiResponse.mood,
-        processing_status: 'completed',
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', journalEntry.id)
-
-    if (updateError) {
-      throw new Error(`Failed to update journal entry: ${updateError.message}`)
+    console.log('✅ OpenAI response received')
+    
+    // Extract the content from OpenAI response
+    const aiContent = openaiData.choices[0]?.message?.content
+    if (!aiContent) {
+      throw new Error('No content in OpenAI response')
     }
 
-    // Insert extracted tasks
-    if (aiResponse.tasks && aiResponse.tasks.length > 0) {
-      const tasksToInsert = aiResponse.tasks.map((task: any) => ({
-        journal_entry_id: journalEntry.id,
-        title: task.title,
-        description: task.description,
-        priority: task.priority || 'medium'
-      }))
-
-      const { error: tasksError } = await supabaseClient
-        .from('tasks')
-        .insert(tasksToInsert)
-
-      if (tasksError) {
-        console.error('Failed to insert tasks:', tasksError)
-        // Don't throw here - journal entry is more important than tasks
-      }
+    console.log('🔍 Parsing AI response...')
+    let parsedResponse
+    try {
+      parsedResponse = JSON.parse(aiContent)
+    } catch (parseError) {
+      console.error('❌ Failed to parse AI response as JSON:', parseError)
+      console.error('❌ AI content:', aiContent)
+      throw new Error('Invalid JSON response from AI')
     }
 
-    // Return the complete processed entry
-    const { data: finalEntry, error: fetchError } = await supabaseClient
-      .from('journal_entries')
-      .select(`
-        *,
-        tasks (*)
-      `)
-      .eq('id', journalEntry.id)
-      .single()
+    console.log('✅ Successfully processed brain dump')
+    console.log('📊 Extracted tasks:', parsedResponse.tasks?.length || 0)
 
-    if (fetchError) {
-      throw new Error(`Failed to fetch final entry: ${fetchError.message}`)
-    }
-
-    return new Response(
-      JSON.stringify({ 
-        success: true, 
-        data: finalEntry 
-      }),
-      { 
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        } 
-      }
-    )
+    // Return the parsed response directly (not wrapped in another object)
+    return new Response(JSON.stringify(parsedResponse), {
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json' 
+      },
+    })
 
   } catch (error) {
-    console.error('Error processing brain dump:', error)
+    console.error('💥 Function error:', error)
     
-    return new Response(
-      JSON.stringify({ 
-        success: false, 
-        error: error.message 
-      }),
-      { 
-        status: 500,
-        headers: { 
-          ...corsHeaders, 
-          'Content-Type': 'application/json' 
-        } 
-      }
-    )
+    // Return a fallback response in case of errors
+    const fallbackResponse = {
+      id: `fallback-${Date.now()}`,
+      title: "Brain Dump Entry",
+      tasks: [] // Empty tasks array on error
+    }
+    
+    return new Response(JSON.stringify(fallbackResponse), {
+      headers: { 
+        ...corsHeaders, 
+        'Content-Type': 'application/json' 
+      },
+    })
   }
 }) 

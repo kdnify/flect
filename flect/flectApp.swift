@@ -9,9 +9,23 @@ import SwiftUI
 
 @main
 struct flectApp: App {
+    @State private var showingLaunchScreen = true
+    
+    init() {
+        // Remove any calls to resetToSampleData on app launch
+    }
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ZStack {
+                if showingLaunchScreen {
+                    LaunchScreen {
+                        showingLaunchScreen = false
+                    }
+                } else {
+                    ContentView()
+                }
+            }
         }
     }
 }

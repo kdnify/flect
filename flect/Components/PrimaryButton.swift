@@ -7,7 +7,10 @@ struct PrimaryButton: View {
     var isDisabled: Bool = false
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            HapticManager.shared.buttonTap()
+            action()
+        }) {
             HStack {
                 if isLoading {
                     ProgressView()
@@ -24,7 +27,7 @@ struct PrimaryButton: View {
             .frame(height: 50)
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .fill(isDisabled ? Color.mediumGrey : Color.primary)
+                    .fill(isDisabled ? Color.adaptiveTextSecondary : Color.adaptivePrimary)
             )
         }
         .disabled(isDisabled || isLoading)
@@ -37,17 +40,20 @@ struct SecondaryButton: View {
     var isDisabled: Bool = false
     
     var body: some View {
-        Button(action: action) {
+        Button(action: {
+            HapticManager.shared.buttonTap()
+            action()
+        }) {
             Text(title)
                 .font(.headline)
                 .fontWeight(.medium)
-                .foregroundColor(isDisabled ? .mediumGrey : .primary)
+                .foregroundColor(isDisabled ? .adaptiveTextSecondary : .adaptivePrimary)
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .stroke(isDisabled ? Color.mediumGrey : Color.primary, lineWidth: 2)
-                        .fill(Color.background)
+                        .stroke(isDisabled ? Color.adaptiveTextSecondary : Color.adaptivePrimary, lineWidth: 2)
+                        .fill(Color.adaptiveBackground)
                 )
         }
         .disabled(isDisabled)

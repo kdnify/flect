@@ -7,20 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		16F73594DF86B1FDB9465A86 /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ABA8C672F7EFFD1DC45B042 /* GoalService.swift */; };
-		1DB30A111875508D8275F5B2 /* MorningInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE862E208470006165FA /* MorningInsightsView.swift */; };
-		230B20828B259C8F24FACE16 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BB142738BDD51A22AF1EAE /* HapticManager.swift */; };
+		00284BE8EA45F65BE2976939 /* QuickCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 539A634E72FE12C71C23FFFC /* QuickCheckInView.swift */; };
+		1F7ACC4277FDD283E8384A84 /* QuickCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2598EE87D03A28A69AF044 /* QuickCheckInView.swift */; };
+		2F25FBCA795A0957F9094C9D /* PostSubmissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */; };
 		3B34AAAB4F34087181BF1E6C /* DaylioHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */; };
-		3D50A43CC5C4121887CCF87D /* EnhancedGoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */; };
-		50A17AC52853E45F1686CA24 /* UserPreferencesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 61959A7F04534470F60A6A0C /* UserPreferencesService.swift */; };
-		5A7CE3977AFB379A2F329B45 /* DevTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8399C3B3036C0CB60F9BB2 /* DevTools.swift */; };
-		5FA217ADA3EF469B75D320D4 /* InsightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF89FA407027FAC0DB6991D3 /* InsightCard.swift */; };
+		495B350C2843CDEDB3257557 /* InsightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703CBC5C845003BAE92B7C35 /* InsightCard.swift */; };
+		4A29A54FEBB0D796E1D2CCC1 /* CheckInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D415485D66649F54B994A /* CheckInService.swift */; };
+		609855E71B1DCAE24DC16AA3 /* EnhancedGoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A4AAE45A735489A8B3CED01 /* EnhancedGoalOnboardingView.swift */; };
 		640B99EBC320B4FD050A488B /* DaylioCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */; };
 		67CDB5065C59DF8D5D8FEE22 /* LaunchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */; };
-		745FA8397E23D3E86F4BFF06 /* CheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04FC0F00F7C4FD2C68F42D0 /* CheckIn.swift */; };
-		979CCE68D337896C54654D68 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D2E001531F4C959114D492E /* WelcomeView.swift */; };
-		A06324E1E83262E6CA381503 /* PersonalDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A527C3AE2D8B782DC405495 /* PersonalDashboard.swift */; };
-		AEBDABF49FE4BA343797517B /* AIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEAC99620A771B7C6F76E5F /* AIChatView.swift */; };
+		6D2391D6DF40CFF0DE77D073 /* CheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B4D280B631AC861501E4A10 /* CheckIn.swift */; };
+		87346A1E240ED757C42D5579 /* CheckInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8B6FBD2ECD2B8B3F9F85EB /* CheckInService.swift */; };
+		8ACEDEA3B97CD883BCF101EB /* CheckIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04FC0F00F7C4FD2C68F42D0 /* CheckIn.swift */; };
+		8EF88DA3ED2E05EED4142290 /* MorningInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0247937494A8304D5AAFE827 /* MorningInsightsView.swift */; };
+		96BB32A1971C265ED8DB96E0 /* AIChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBEAC99620A771B7C6F76E5F /* AIChatView.swift */; };
 		AFE8F0232E15DF8400AED8CC /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F0052E15DF8400AED8CC /* CardView.swift */; };
 		AFE8F0262E15DF8400AED8CC /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F0062E15DF8400AED8CC /* PrimaryButton.swift */; };
 		AFE8F0302E15DF8400AED8CC /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFE8F00B2E15DF8400AED8CC /* Preview Assets.xcassets */; };
@@ -29,11 +29,8 @@
 		AFE8F0492E15DF8400AED8CC /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AFE8F0192E15DF8400AED8CC /* Assets.xcassets */; };
 		AFE8F04C2E15DF8400AED8CC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F01A2E15DF8400AED8CC /* ContentView.swift */; };
 		AFE8F04D2E15DF8400AED8CC /* flectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F01B2E15DF8400AED8CC /* flectApp.swift */; };
-		B6DD8F5ACCB7C6EECC26B13E /* EnhancedLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D55CEE3939B2D9B671880AC /* EnhancedLoadingView.swift */; };
-		B75240E3EF8BD6E8ED41E1C2 /* CheckInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D415485D66649F54B994A /* CheckInService.swift */; };
-		CF06556C08F00C529248FDCB /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71069879E06A6EEA3753154 /* OnboardingFlow.swift */; };
-		D2B4D6BA8A025846EB5227CE /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA32DBE16549416D678A5058 /* Goals.swift */; };
-		D4E0787D309644A17A3A86F2 /* QuickCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A2598EE87D03A28A69AF044 /* QuickCheckInView.swift */; };
+		BAC91FFE9D0BD4F245A55FD3 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04BB142738BDD51A22AF1EAE /* HapticManager.swift */; };
+		C477EFD04852E04127578F34 /* EnhancedLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D55CEE3939B2D9B671880AC /* EnhancedLoadingView.swift */; };
 		D88D99E34FD1A073AC977EF3 /* MoodChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */; };
 		DE5A23CE2E1D925E0057C770 /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = AF5E43512E15C05000F1D345 /* Supabase */; };
 		DECBAE562E20631E006165FA /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFE8F0102E15DF8400AED8CC /* Colors.swift */; };
@@ -66,28 +63,19 @@
 		DECBAE712E20631E006165FA /* MoodChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */; };
 		DECBAE722E20631E006165FA /* DaylioHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */; };
 		DECBAE732E20631E006165FA /* CheckInService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C22D415485D66649F54B994A /* CheckInService.swift */; };
-		DECBAE752E206AC1006165FA /* (null) in Sources */ = {isa = PBXBuildFile; };
-		DECBAE762E206AC1006165FA /* (null) in Sources */ = {isa = PBXBuildFile; };
-		DECBAE792E206ACE006165FA /* (null) in Sources */ = {isa = PBXBuildFile; };
-		DECBAE7A2E206ACE006165FA /* (null) in Sources */ = {isa = PBXBuildFile; };
+		DECBAE752E206AC1006165FA /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE742E206AC1006165FA /* Goals.swift */; };
+		DECBAE762E206AC1006165FA /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE742E206AC1006165FA /* Goals.swift */; };
+		DECBAE772E206AC1006165FA /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE742E206AC1006165FA /* Goals.swift */; };
+		DECBAE792E206ACE006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE782E206ACE006165FA /* GoalService.swift */; };
+		DECBAE7A2E206ACE006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE782E206ACE006165FA /* GoalService.swift */; };
+		DECBAE7B2E206ACE006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE782E206ACE006165FA /* GoalService.swift */; };
 		DECBAE7E2E206AE0006165FA /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE7D2E206AE0006165FA /* HistoryView.swift */; };
 		DECBAE7F2E206AE0006165FA /* GoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE7C2E206AE0006165FA /* GoalOnboardingView.swift */; };
 		DECBAE802E206AE0006165FA /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE7D2E206AE0006165FA /* HistoryView.swift */; };
 		DECBAE812E206AE0006165FA /* GoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE7C2E206AE0006165FA /* GoalOnboardingView.swift */; };
 		DECBAE822E206AE0006165FA /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE7D2E206AE0006165FA /* HistoryView.swift */; };
 		DECBAE832E206AE0006165FA /* GoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE7C2E206AE0006165FA /* GoalOnboardingView.swift */; };
-		DECBAE872E208470006165FA /* EnhancedGoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */; };
-		DECBAE882E208470006165FA /* MorningInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE862E208470006165FA /* MorningInsightsView.swift */; };
-		DECBAE8B2E208470006165FA /* EnhancedGoalOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */; };
-		DECBAE8C2E208470006165FA /* MorningInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE862E208470006165FA /* MorningInsightsView.swift */; };
-		DECBAE8E2E2087FE006165FA /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE8D2E2087FE006165FA /* Goals.swift */; };
-		DECBAE8F2E2087FE006165FA /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE8D2E2087FE006165FA /* Goals.swift */; };
-		DECBAE902E2087FE006165FA /* Goals.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE8D2E2087FE006165FA /* Goals.swift */; };
-		DECBAE922E208807006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE912E208807006165FA /* GoalService.swift */; };
-		DECBAE932E208807006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE912E208807006165FA /* GoalService.swift */; };
-		DECBAE942E208807006165FA /* GoalService.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECBAE912E208807006165FA /* GoalService.swift */; };
-		E20EA4D5E07C45D5C2D162DF /* PostSubmissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */; };
-		F15DC28F356DDD0F35191C76 /* FirstCheckInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A9FF1BC7043E3163D91A9DB /* FirstCheckInView.swift */; };
+		F19D3A20DEFF8A031687674D /* InsightCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF89FA407027FAC0DB6991D3 /* InsightCard.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,19 +96,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0247937494A8304D5AAFE827 /* MorningInsightsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MorningInsightsView.swift; path = flect/Views/MorningInsightsView.swift; sourceTree = "<group>"; };
 		034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PostSubmissionView.swift; sourceTree = "<group>"; };
 		04BB142738BDD51A22AF1EAE /* HapticManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		0A690CA9FFC1681847EB4811 /* DaylioCheckInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DaylioCheckInView.swift; sourceTree = "<group>"; };
-		1A527C3AE2D8B782DC405495 /* PersonalDashboard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PersonalDashboard.swift; path = flect/Views/PersonalDashboard.swift; sourceTree = "<group>"; };
-		2ABA8C672F7EFFD1DC45B042 /* GoalService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = GoalService.swift; path = flect/Services/GoalService.swift; sourceTree = "<group>"; };
 		2AC279E26BCC8E3922A0F77A /* MoodChartView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoodChartView.swift; sourceTree = "<group>"; };
 		44C81C0AB69DB8223AC47EC6 /* LaunchScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
 		4A2598EE87D03A28A69AF044 /* QuickCheckInView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickCheckInView.swift; sourceTree = "<group>"; };
-		4D2E001531F4C959114D492E /* WelcomeView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WelcomeView.swift; path = flect/Views/WelcomeView.swift; sourceTree = SOURCE_ROOT; };
-		61959A7F04534470F60A6A0C /* UserPreferencesService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = UserPreferencesService.swift; sourceTree = "<group>"; };
-		6A9FF1BC7043E3163D91A9DB /* FirstCheckInView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FirstCheckInView.swift; path = flect/Views/FirstCheckInView.swift; sourceTree = SOURCE_ROOT; };
+		4A4AAE45A735489A8B3CED01 /* EnhancedGoalOnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EnhancedGoalOnboardingView.swift; path = flect/Views/EnhancedGoalOnboardingView.swift; sourceTree = "<group>"; };
+		4B4D280B631AC861501E4A10 /* CheckIn.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CheckIn.swift; path = flect/Models/CheckIn.swift; sourceTree = "<group>"; };
+		539A634E72FE12C71C23FFFC /* QuickCheckInView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = QuickCheckInView.swift; path = flect/Views/QuickCheckInView.swift; sourceTree = "<group>"; };
 		6d9f8ffe072324ae1fb42627 /* PersonalDashboard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalDashboard.swift; sourceTree = "<group>"; };
-		7A8399C3B3036C0CB60F9BB2 /* DevTools.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DevTools.swift; sourceTree = "<group>"; };
+		703CBC5C845003BAE92B7C35 /* InsightCard.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = InsightCard.swift; path = flect/Components/InsightCard.swift; sourceTree = "<group>"; };
+		7A8B6FBD2ECD2B8B3F9F85EB /* CheckInService.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CheckInService.swift; path = flect/Services/CheckInService.swift; sourceTree = "<group>"; };
 		8D55CEE3939B2D9B671880AC /* EnhancedLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnhancedLoadingView.swift; sourceTree = "<group>"; };
 		AF5E43272E15C04C00F1D345 /* flect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = flect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AF5E43372E15C04F00F1D345 /* flectTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = flectTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -135,18 +123,14 @@
 		AFE8F01A2E15DF8400AED8CC /* ContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AFE8F01B2E15DF8400AED8CC /* flectApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = flectApp.swift; sourceTree = "<group>"; };
 		AFE8F01F2E15DF8400AED8CC /* flectTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = flectTests.swift; sourceTree = "<group>"; };
-		B71069879E06A6EEA3753154 /* OnboardingFlow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingFlow.swift; path = flect/Views/OnboardingFlow.swift; sourceTree = SOURCE_ROOT; };
-		BA32DBE16549416D678A5058 /* Goals.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Goals.swift; path = flect/Models/Goals.swift; sourceTree = "<group>"; };
 		C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DaylioHomeView.swift; sourceTree = "<group>"; };
 		C22D415485D66649F54B994A /* CheckInService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckInService.swift; sourceTree = "<group>"; };
 		CF89FA407027FAC0DB6991D3 /* InsightCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InsightCard.swift; sourceTree = "<group>"; };
 		DE5A23D42E1D93650057C770 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DECBAE742E206AC1006165FA /* Goals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goals.swift; sourceTree = "<group>"; };
+		DECBAE782E206ACE006165FA /* GoalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalService.swift; sourceTree = "<group>"; };
 		DECBAE7C2E206AE0006165FA /* GoalOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalOnboardingView.swift; sourceTree = "<group>"; };
 		DECBAE7D2E206AE0006165FA /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
-		DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedGoalOnboardingView.swift; sourceTree = "<group>"; };
-		DECBAE862E208470006165FA /* MorningInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningInsightsView.swift; sourceTree = "<group>"; };
-		DECBAE8D2E2087FE006165FA /* Goals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Goals.swift; sourceTree = "<group>"; };
-		DECBAE912E208807006165FA /* GoalService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalService.swift; sourceTree = "<group>"; };
 		E04FC0F00F7C4FD2C68F42D0 /* CheckIn.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CheckIn.swift; sourceTree = "<group>"; };
 		EBEAC99620A771B7C6F76E5F /* AIChatView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AIChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -184,9 +168,12 @@
 				AF5E43442E15C04F00F1D345 /* flectUITests */,
 				AFE8F01D2E15DF8400AED8CC /* flect */,
 				AF5E43282E15C04C00F1D345 /* Products */,
-				1A527C3AE2D8B782DC405495 /* PersonalDashboard.swift */,
-				BA32DBE16549416D678A5058 /* Goals.swift */,
-				2ABA8C672F7EFFD1DC45B042 /* GoalService.swift */,
+				4B4D280B631AC861501E4A10 /* CheckIn.swift */,
+				703CBC5C845003BAE92B7C35 /* InsightCard.swift */,
+				7A8B6FBD2ECD2B8B3F9F85EB /* CheckInService.swift */,
+				539A634E72FE12C71C23FFFC /* QuickCheckInView.swift */,
+				0247937494A8304D5AAFE827 /* MorningInsightsView.swift */,
+				4A4AAE45A735489A8B3CED01 /* EnhancedGoalOnboardingView.swift */,
 			);
 			sourceTree = "<group>";
 		};
@@ -223,7 +210,7 @@
 		AFE8F00A2E15DF8400AED8CC /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				DECBAE8D2E2087FE006165FA /* Goals.swift */,
+				DECBAE742E206AC1006165FA /* Goals.swift */,
 				E04FC0F00F7C4FD2C68F42D0 /* CheckIn.swift */,
 			);
 			path = Models;
@@ -240,9 +227,8 @@
 		AFE8F00F2E15DF8400AED8CC /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				DECBAE912E208807006165FA /* GoalService.swift */,
+				DECBAE782E206ACE006165FA /* GoalService.swift */,
 				C22D415485D66649F54B994A /* CheckInService.swift */,
-				61959A7F04534470F60A6A0C /* UserPreferencesService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -252,7 +238,6 @@
 			children = (
 				AFE8F0102E15DF8400AED8CC /* Colors.swift */,
 				04BB142738BDD51A22AF1EAE /* HapticManager.swift */,
-				7A8399C3B3036C0CB60F9BB2 /* DevTools.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -267,8 +252,6 @@
 		AFE8F01C2E15DF8400AED8CC /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				DECBAE852E208470006165FA /* EnhancedGoalOnboardingView.swift */,
-				DECBAE862E208470006165FA /* MorningInsightsView.swift */,
 				DECBAE7C2E206AE0006165FA /* GoalOnboardingView.swift */,
 				DECBAE7D2E206AE0006165FA /* HistoryView.swift */,
 				6d9f8ffe072324ae1fb42627 /* PersonalDashboard.swift */,
@@ -279,9 +262,6 @@
 				C143B1AC6B4B71C0285A2C78 /* DaylioHomeView.swift */,
 				EBEAC99620A771B7C6F76E5F /* AIChatView.swift */,
 				034DFDA98225EBF74F99A684 /* PostSubmissionView.swift */,
-				4D2E001531F4C959114D492E /* WelcomeView.swift */,
-				B71069879E06A6EEA3753154 /* OnboardingFlow.swift */,
-				6A9FF1BC7043E3163D91A9DB /* FirstCheckInView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -454,32 +434,28 @@
 				DECBAE812E206AE0006165FA /* GoalOnboardingView.swift in Sources */,
 				AFE8F04C2E15DF8400AED8CC /* ContentView.swift in Sources */,
 				AFE8F0232E15DF8400AED8CC /* CardView.swift in Sources */,
-				DECBAE8F2E2087FE006165FA /* Goals.swift in Sources */,
 				AFE8F04D2E15DF8400AED8CC /* flectApp.swift in Sources */,
 				AFE8F0262E15DF8400AED8CC /* PrimaryButton.swift in Sources */,
+				C477EFD04852E04127578F34 /* EnhancedLoadingView.swift in Sources */,
+				BAC91FFE9D0BD4F245A55FD3 /* HapticManager.swift in Sources */,
+				8ACEDEA3B97CD883BCF101EB /* CheckIn.swift in Sources */,
+				F19D3A20DEFF8A031687674D /* InsightCard.swift in Sources */,
+				1F7ACC4277FDD283E8384A84 /* QuickCheckInView.swift in Sources */,
+				DECBAE7B2E206ACE006165FA /* GoalService.swift in Sources */,
 				67CDB5065C59DF8D5D8FEE22 /* LaunchScreen.swift in Sources */,
 				640B99EBC320B4FD050A488B /* DaylioCheckInView.swift in Sources */,
+				DECBAE772E206AC1006165FA /* Goals.swift in Sources */,
 				D88D99E34FD1A073AC977EF3 /* MoodChartView.swift in Sources */,
 				3B34AAAB4F34087181BF1E6C /* DaylioHomeView.swift in Sources */,
-				A06324E1E83262E6CA381503 /* PersonalDashboard.swift in Sources */,
-				D2B4D6BA8A025846EB5227CE /* Goals.swift in Sources */,
-				16F73594DF86B1FDB9465A86 /* GoalService.swift in Sources */,
-				745FA8397E23D3E86F4BFF06 /* CheckIn.swift in Sources */,
-				5FA217ADA3EF469B75D320D4 /* InsightCard.swift in Sources */,
-				B75240E3EF8BD6E8ED41E1C2 /* CheckInService.swift in Sources */,
-				DECBAE932E208807006165FA /* GoalService.swift in Sources */,
-				D4E0787D309644A17A3A86F2 /* QuickCheckInView.swift in Sources */,
-				1DB30A111875508D8275F5B2 /* MorningInsightsView.swift in Sources */,
-				3D50A43CC5C4121887CCF87D /* EnhancedGoalOnboardingView.swift in Sources */,
-				E20EA4D5E07C45D5C2D162DF /* PostSubmissionView.swift in Sources */,
-				AEBDABF49FE4BA343797517B /* AIChatView.swift in Sources */,
-				230B20828B259C8F24FACE16 /* HapticManager.swift in Sources */,
-				B6DD8F5ACCB7C6EECC26B13E /* EnhancedLoadingView.swift in Sources */,
-				979CCE68D337896C54654D68 /* WelcomeView.swift in Sources */,
-				CF06556C08F00C529248FDCB /* OnboardingFlow.swift in Sources */,
-				F15DC28F356DDD0F35191C76 /* FirstCheckInView.swift in Sources */,
-				5A7CE3977AFB379A2F329B45 /* DevTools.swift in Sources */,
-				50A17AC52853E45F1686CA24 /* UserPreferencesService.swift in Sources */,
+				4A29A54FEBB0D796E1D2CCC1 /* CheckInService.swift in Sources */,
+				96BB32A1971C265ED8DB96E0 /* AIChatView.swift in Sources */,
+				2F25FBCA795A0957F9094C9D /* PostSubmissionView.swift in Sources */,
+				6D2391D6DF40CFF0DE77D073 /* CheckIn.swift in Sources */,
+				495B350C2843CDEDB3257557 /* InsightCard.swift in Sources */,
+				87346A1E240ED757C42D5579 /* CheckInService.swift in Sources */,
+				00284BE8EA45F65BE2976939 /* QuickCheckInView.swift in Sources */,
+				8EF88DA3ED2E05EED4142290 /* MorningInsightsView.swift in Sources */,
+				609855E71B1DCAE24DC16AA3 /* EnhancedGoalOnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,16 +473,12 @@
 				DECBAE5B2E20631E006165FA /* EnhancedLoadingView.swift in Sources */,
 				DECBAE5C2E20631E006165FA /* HapticManager.swift in Sources */,
 				DECBAE5D2E20631E006165FA /* CheckIn.swift in Sources */,
-				DECBAE902E2087FE006165FA /* Goals.swift in Sources */,
 				DECBAE5E2E20631E006165FA /* InsightCard.swift in Sources */,
 				DECBAE5F2E20631E006165FA /* QuickCheckInView.swift in Sources */,
-				DECBAE792E206ACE006165FA /* (null) in Sources */,
+				DECBAE792E206ACE006165FA /* GoalService.swift in Sources */,
 				DECBAE602E20631E006165FA /* LaunchScreen.swift in Sources */,
-				DECBAE8B2E208470006165FA /* EnhancedGoalOnboardingView.swift in Sources */,
-				DECBAE8C2E208470006165FA /* MorningInsightsView.swift in Sources */,
-				DECBAE922E208807006165FA /* GoalService.swift in Sources */,
 				DECBAE612E20631E006165FA /* DaylioCheckInView.swift in Sources */,
-				DECBAE752E206AC1006165FA /* (null) in Sources */,
+				DECBAE752E206AC1006165FA /* Goals.swift in Sources */,
 				DECBAE622E20631E006165FA /* MoodChartView.swift in Sources */,
 				DECBAE632E20631E006165FA /* DaylioHomeView.swift in Sources */,
 				DECBAE642E20631E006165FA /* CheckInService.swift in Sources */,
@@ -527,16 +499,12 @@
 				DECBAE6A2E20631E006165FA /* EnhancedLoadingView.swift in Sources */,
 				DECBAE6B2E20631E006165FA /* HapticManager.swift in Sources */,
 				DECBAE6C2E20631E006165FA /* CheckIn.swift in Sources */,
-				DECBAE8E2E2087FE006165FA /* Goals.swift in Sources */,
 				DECBAE6D2E20631E006165FA /* InsightCard.swift in Sources */,
 				DECBAE6E2E20631E006165FA /* QuickCheckInView.swift in Sources */,
-				DECBAE7A2E206ACE006165FA /* (null) in Sources */,
+				DECBAE7A2E206ACE006165FA /* GoalService.swift in Sources */,
 				DECBAE6F2E20631E006165FA /* LaunchScreen.swift in Sources */,
-				DECBAE872E208470006165FA /* EnhancedGoalOnboardingView.swift in Sources */,
-				DECBAE882E208470006165FA /* MorningInsightsView.swift in Sources */,
-				DECBAE942E208807006165FA /* GoalService.swift in Sources */,
 				DECBAE702E20631E006165FA /* DaylioCheckInView.swift in Sources */,
-				DECBAE762E206AC1006165FA /* (null) in Sources */,
+				DECBAE762E206AC1006165FA /* Goals.swift in Sources */,
 				DECBAE712E20631E006165FA /* MoodChartView.swift in Sources */,
 				DECBAE722E20631E006165FA /* DaylioHomeView.swift in Sources */,
 				DECBAE732E20631E006165FA /* CheckInService.swift in Sources */,

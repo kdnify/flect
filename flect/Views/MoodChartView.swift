@@ -96,19 +96,7 @@ struct MoodChartView: View {
     
     private var moodTimelineChart: some View {
         VStack(spacing: 12) {
-            // Mood level indicators (now just color dots)
-            HStack {
-                ForEach(1...5, id: \.self) { level in
-                    Circle()
-                        .fill(Color.moodColor(for: moodName(for: level)))
-                        .frame(width: 16, height: 16)
-                        .overlay(
-                            Circle().stroke(Color.borderColorHex, lineWidth: 1)
-                        )
-                    if level < 5 { Spacer() }
-                }
-            }
-            .padding(.horizontal, 8)
+            moodLevelIndicators
             // Chart area
             GeometryReader { geometry in
                 ZStack {
@@ -130,8 +118,8 @@ struct MoodChartView: View {
                     // Mood points
                     ForEach(Array(filteredCheckIns.enumerated()), id: \.element.id) { index, checkIn in
                         let x = geometry.size.width / CGFloat(max(filteredCheckIns.count - 1, 1)) * CGFloat(index)
-                        let moodLevel = moodLevel(for: checkIn.moodEmoji)
-                        let y = geometry.size.height - (geometry.size.height / 4 * CGFloat(moodLevel - 1))
+                        let moodLevelValue = moodLevel(for: checkIn.moodEmoji)
+                        let y = geometry.size.height - (geometry.size.height / 4 * CGFloat(moodLevelValue - 1))
                         Circle()
                             .fill(Color.moodColor(for: checkIn.moodEmoji))
                             .frame(width: 12, height: 12)
@@ -154,8 +142,8 @@ struct MoodChartView: View {
         Path { path in
             let points = filteredCheckIns.enumerated().map { index, checkIn in
                 let x = geometry.size.width / CGFloat(max(filteredCheckIns.count - 1, 1)) * CGFloat(index)
-                let moodValue = moodValue(from: checkIn.moodEmoji)
-                let y = geometry.size.height - (geometry.size.height / 4 * CGFloat(moodValue - 1))
+                let moodLevelValue = moodLevel(for: checkIn.moodEmoji)
+                let y = geometry.size.height - (geometry.size.height / 4 * CGFloat(moodLevelValue - 1))
                 return CGPoint(x: x, y: y)
             }
             
@@ -344,6 +332,37 @@ struct MoodChartView: View {
         case 5: return "Great"
         default: return "Neutral"
         }
+    }
+    
+    private func moodLevel(for mood: String) -> Int {
+        switch mood {
+        case "Rough": return 1
+        case "Okay": return 2
+        case "Neutral": return 3
+        case "Good": return 4
+        case "Great": return 5
+        default: return 3
+        }
+    }
+    
+    private var bestMoodName: String {
+        guard let bestCheckIn = filteredCheckIns.max(by: { moodLevel(for: $0.moodEmoji) < moodLevel(for: $1.moodEmoji) }) else { return "Neutral" }
+        return bestCheckIn.moodEmoji
+    }
+    
+    private var moodLevelIndicators: some View {
+        HStack {
+            ForEach(1...5, id: \.self) { level in
+                Circle()
+                    .fill(Color.moodColor(for: moodName(for: level)))
+                    .frame(width: 16, height: 16)
+                    .overlay(
+                        Circle().stroke(Color.borderColorHex, lineWidth: 1)
+                    )
+                if level < 5 { Spacer() }
+            }
+        }
+        .padding(.horizontal, 8)
     }
 }
 

@@ -334,6 +334,17 @@ struct MoodChartView: View {
         default: return "😐"
         }
     }
+    
+    private func moodName(for level: Int) -> String {
+        switch level {
+        case 1: return "Rough"
+        case 2: return "Okay"
+        case 3: return "Neutral"
+        case 4: return "Good"
+        case 5: return "Great"
+        default: return "Neutral"
+        }
+    }
 }
 
 // MARK: - TimeFrame Enum

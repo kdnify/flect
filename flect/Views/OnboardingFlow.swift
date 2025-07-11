@@ -6,9 +6,10 @@ struct OnboardingFlow: View {
     @State private var selectedFrequency: CheckInFrequency = .daily
     @State private var notificationsEnabled = true
     @State private var showingFirstCheckIn = false
+    @State private var showingPersonalityQuiz = false
     @Environment(\.dismiss) private var dismiss
     
-    let totalSteps = 3
+    let totalSteps = 4
     // Animation states
     @State private var animateStep = false
     
@@ -47,6 +48,12 @@ struct OnboardingFlow: View {
                             .opacity(animateStep ? 1 : 0)
                             .offset(y: animateStep ? 0 : 40)
                             .animation(.easeOut(duration: 0.5), value: animateStep)
+                        
+                        personalityIntroView
+                            .tag(3)
+                            .opacity(animateStep ? 1 : 0)
+                            .offset(y: animateStep ? 0 : 40)
+                            .animation(.easeOut(duration: 0.5), value: animateStep)
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
                     .animation(.easeInOut(duration: 0.3), value: currentStep)
@@ -74,6 +81,12 @@ struct OnboardingFlow: View {
         .navigationBarHidden(true)
         .fullScreenCover(isPresented: $showingFirstCheckIn) {
             FirstCheckInView()
+        }
+        .fullScreenCover(isPresented: $showingPersonalityQuiz) {
+            PersonalityQuizView { profile in
+                showingPersonalityQuiz = false
+                completeOnboarding()
+            }
         }
     }
     
@@ -281,6 +294,95 @@ struct OnboardingFlow: View {
         .padding(.horizontal, 32)
     }
     
+    // MARK: - Personality Intro View
+    
+    private var personalityIntroView: some View {
+        VStack(spacing: 32) {
+            Spacer()
+            
+            VStack(spacing: 24) {
+                // Personality icon
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(LinearGradient(
+                        colors: [
+                            Color.purple.opacity(0.8),
+                            Color.blue.opacity(0.6)
+                        ],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ))
+                    .frame(width: 80, height: 80)
+                    .overlay(
+                        Image(systemName: "brain.filled.head.profile")
+                            .font(.system(size: 32, weight: .medium))
+                            .foregroundColor(.white)
+                    )
+                    .shadow(color: .purple.opacity(0.3), radius: 12, x: 0, y: 6)
+                
+                VStack(spacing: 16) {
+                    Text("Let's get to know you")
+                        .font(.system(size: 28, weight: .light))
+                        .foregroundColor(.textMainHex)
+                        .multilineTextAlignment(.center)
+                        .tracking(0.5)
+                    
+                    Text("Answer a few quick questions so we can personalize your flect experience")
+                        .font(.system(size: 16, weight: .regular))
+                        .foregroundColor(.mediumGreyHex)
+                        .multilineTextAlignment(.center)
+                        .lineSpacing(2)
+                }
+            }
+            
+            VStack(spacing: 16) {
+                HStack {
+                    Image(systemName: "sparkles")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.purple.opacity(0.8))
+                    
+                    Text("Personalized language and insights")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.textMainHex)
+                    
+                    Spacer()
+                }
+                
+                HStack {
+                    Image(systemName: "heart.text.square")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.blue.opacity(0.8))
+                    
+                    Text("Tailored motivation and encouragement")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.textMainHex)
+                    
+                    Spacer()
+                }
+                
+                HStack {
+                    Image(systemName: "chart.line.uptrend.xyaxis")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.green.opacity(0.8))
+                    
+                    Text("Smarter pattern recognition")
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.textMainHex)
+                    
+                    Spacer()
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color.gray.opacity(0.05))
+            )
+            
+            Spacer()
+        }
+        .padding(.horizontal, 32)
+    }
+    
     // MARK: - Bottom Actions
     
     private var bottomActions: some View {
@@ -308,13 +410,13 @@ struct OnboardingFlow: View {
                         currentStep += 1
                     }
                 } else {
-                    // Complete onboarding
-                    completeOnboarding()
+                    // Show personality quiz
+                    showingPersonalityQuiz = true
                 }
                 HapticManager.shared.lightImpact()
             }) {
                 HStack(spacing: 12) {
-                    Text(currentStep < totalSteps - 1 ? "Continue" : "Start Your Journey")
+                    Text(currentStep < totalSteps - 1 ? "Continue" : "Take Personality Quiz")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.white)
                     

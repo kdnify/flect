@@ -96,25 +96,19 @@ struct MoodChartView: View {
     
     private var moodTimelineChart: some View {
         VStack(spacing: 12) {
-            // Mood level indicators
+            // Mood level indicators (now just color dots)
             HStack {
                 ForEach(1...5, id: \.self) { level in
-                    VStack(spacing: 4) {
-                        Text(moodLevelEmoji(level))
-                            .font(.caption)
-                        
-                        Text("\(level)")
-                            .font(.caption2)
-                            .foregroundColor(.mediumGreyHex)
-                    }
-                    
-                    if level < 5 {
-                        Spacer()
-                    }
+                    Circle()
+                        .fill(Color.moodColor(for: moodName(for: level)))
+                        .frame(width: 16, height: 16)
+                        .overlay(
+                            Circle().stroke(Color.borderColorHex, lineWidth: 1)
+                        )
+                    if level < 5 { Spacer() }
                 }
             }
             .padding(.horizontal, 8)
-            
             // Chart area
             GeometryReader { geometry in
                 ZStack {
@@ -122,8 +116,6 @@ struct MoodChartView: View {
                     Path { path in
                         let width = geometry.size.width
                         let height = geometry.size.height
-                        
-                        // Horizontal lines for mood levels
                         for i in 0...4 {
                             let y = height - (height / 4 * CGFloat(i))
                             path.move(to: CGPoint(x: 0, y: y))
@@ -131,27 +123,23 @@ struct MoodChartView: View {
                         }
                     }
                     .stroke(Color.mediumGreyHex.opacity(0.2), lineWidth: 1)
-                    
                     // Mood line chart
                     if filteredCheckIns.count > 1 {
                         moodLineChart(in: geometry)
                     }
-                    
                     // Mood points
                     ForEach(Array(filteredCheckIns.enumerated()), id: \.element.id) { index, checkIn in
                         let x = geometry.size.width / CGFloat(max(filteredCheckIns.count - 1, 1)) * CGFloat(index)
-                        let moodValue = moodValue(from: checkIn.moodEmoji)
-                        let y = geometry.size.height - (geometry.size.height / 4 * CGFloat(moodValue - 1))
-                        
+                        let moodLevel = moodLevel(for: checkIn.moodEmoji)
+                        let y = geometry.size.height - (geometry.size.height / 4 * CGFloat(moodLevel - 1))
                         Circle()
-                            .fill(moodColor(from: checkIn.moodEmoji))
+                            .fill(Color.moodColor(for: checkIn.moodEmoji))
                             .frame(width: 12, height: 12)
                             .position(x: x, y: y)
                             .overlay(
-                                Text(checkIn.moodEmoji)
-                                    .font(.system(size: 8))
-                                    .position(x: x, y: y)
+                                Circle().stroke(Color.borderColorHex, lineWidth: 1)
                             )
+                            .accessibilityLabel("Mood: \(checkIn.moodEmoji)")
                     }
                 }
             }
@@ -193,7 +181,7 @@ struct MoodChartView: View {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 2), spacing: 12) {
                     StatCard(
                         title: "Average Mood",
-                        value: String(format: "%.1f", averageMood),
+                        value: "",
                         subtitle: averageMoodText,
                         icon: "heart.fill",
                         color: .accentHex
@@ -209,10 +197,10 @@ struct MoodChartView: View {
                     
                     StatCard(
                         title: "Best Day",
-                        value: bestMoodEmoji,
+                        value: "",
                         subtitle: bestMoodDate,
                         icon: "star.fill",
-                        color: .yellow
+                        color: Color.moodColor(for: bestMoodName)
                     )
                     
                     StatCard(

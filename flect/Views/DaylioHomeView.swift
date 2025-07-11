@@ -227,25 +227,31 @@ struct DaylioHomeView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Feeling")
+                            Text("Today's Mood")
                                 .font(.caption)
                                 .fontWeight(.medium)
                                 .foregroundColor(.mediumGreyHex)
                                 .textCase(.uppercase)
-                            Text(moodName(from: todaysCheckIn.moodEmoji))
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.textMainHex)
+                            // Show color swatch only, no text
+                            Circle()
+                                .fill(Color.moodColor(for: todaysCheckIn.moodEmoji))
+                                .frame(width: 40, height: 40)
+                                .shadow(color: Color.moodColor(for: todaysCheckIn.moodEmoji).opacity(0.25), radius: 8, x: 0, y: 4)
+                                .overlay(
+                                    Circle()
+                                        .stroke(Color.white.opacity(0.3), lineWidth: 2)
+                                )
+                                .accessibilityLabel("Today's mood color")
                         }
                         Spacer()
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(moodColor(from: todaysCheckIn.moodEmoji))
+                            .fill(Color.moodColor(for: todaysCheckIn.moodEmoji))
                             .frame(width: 60, height: 60)
                             .overlay(
                                 RoundedRectangle(cornerRadius: 8)
                                     .stroke(Color.white.opacity(0.3), lineWidth: 1)
                             )
-                            .shadow(color: moodColor(from: todaysCheckIn.moodEmoji).opacity(0.3), radius: 8, x: 0, y: 4)
+                            .shadow(color: Color.moodColor(for: todaysCheckIn.moodEmoji).opacity(0.3), radius: 8, x: 0, y: 4)
                     }
                     if !todaysCheckIn.happyThing.isEmpty {
                         VStack(alignment: .leading, spacing: 4) {
@@ -377,7 +383,7 @@ struct DaylioHomeView: View {
                             RoundedRectangle(cornerRadius: 6)
                                 .fill(checkIn != nil ? 
                                     LinearGradient(
-                                        colors: [moodColor(from: checkIn!.moodEmoji), moodColor(from: checkIn!.moodEmoji).opacity(0.7)],
+                                        colors: [Color.moodColor(for: checkIn!.moodEmoji), Color.moodColor(for: checkIn!.moodEmoji).opacity(0.7)],
                                         startPoint: .topLeading,
                                         endPoint: .bottomTrailing
                                     ) : 
@@ -388,7 +394,7 @@ struct DaylioHomeView: View {
                                     )
                                 )
                                 .frame(width: 32, height: 32)
-                                .shadow(color: checkIn != nil ? moodColor(from: checkIn!.moodEmoji).opacity(0.2) : .clear, radius: 4, x: 0, y: 2)
+                                .shadow(color: checkIn != nil ? Color.moodColor(for: checkIn!.moodEmoji).opacity(0.2) : .clear, radius: 4, x: 0, y: 2)
                         }
                     }
                 }
@@ -591,36 +597,24 @@ struct DaylioHomeView: View {
     
     // MARK: - Helper Functions
     
-    private func moodValue(from emoji: String) -> Int {
-        switch emoji {
+    private func moodValue(from moodIdentifier: String) -> Int {
+        // Handle new mood name system
+        switch moodIdentifier {
+        case "Rough": return 1
+        case "Okay": return 2  
+        case "Neutral": return 3
+        case "Good": return 4
+        case "Great": return 5
+        case "Awful": return 1
+        case "Bad": return 2
+        case "Amazing": return 5
+        // Legacy emoji fallback
         case "😢": return 1
         case "😞": return 2
         case "😐": return 3
         case "😊": return 4
         case "😍": return 5
         default: return 3
-        }
-    }
-    
-    private func moodColor(from emoji: String) -> Color {
-        switch emoji {
-        case "😢": return .red
-        case "😞": return .orange
-        case "😐": return .yellow
-        case "😊": return .green
-        case "😍": return .purple
-        default: return .gray
-        }
-    }
-    
-    private func moodName(from emoji: String) -> String {
-        switch emoji {
-        case "😢": return "Awful"
-        case "😞": return "Bad"
-        case "😐": return "Okay"
-        case "😊": return "Good"
-        case "😍": return "Amazing"
-        default: return "Unknown"
         }
     }
 }

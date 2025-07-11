@@ -238,7 +238,7 @@ struct DaylioCheckInView: View {
         Task {
             do {
                 // Convert to our existing format
-                let moodEmoji = selectedMood.emoji
+                let moodEmoji = selectedMood.name // Use mood name instead of emoji
                 let happyThing = selectedActivities.map { $0.name }.joined(separator: ", ")
                 let improveThing = dailyBrainDump.brainDumpContent.isEmpty ? "No specific improvements noted" : dailyBrainDump.brainDumpContent
                 

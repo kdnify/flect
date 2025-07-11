@@ -203,7 +203,21 @@ struct QuickCheckInView: View {
     }
     
     // MARK: - Actions
-    
+
+    private func moodNameFromEmoji(_ emoji: String) -> String {
+        switch emoji {
+        case "😌": return "Neutral"
+        case "😊": return "Good"
+        case "😃": return "Great"
+        case "🤔": return "Neutral"
+        case "😤": return "Okay"
+        case "😔": return "Rough"
+        case "😴": return "Okay"
+        case "😰": return "Rough"
+        default: return "Neutral"
+        }
+    }
+
     private func submitCheckIn() {
         isSubmitting = true
         HapticManager.shared.success()
@@ -213,7 +227,7 @@ struct QuickCheckInView: View {
                 let checkIn = try await checkInService.submitCheckIn(
                     happyThing: happyThing.trimmingCharacters(in: .whitespacesAndNewlines),
                     improveThing: improveThing.trimmingCharacters(in: .whitespacesAndNewlines),
-                    moodEmoji: selectedMood
+                    moodEmoji: moodNameFromEmoji(selectedMood) // Convert emoji to mood name
                 )
                 
                 await MainActor.run {

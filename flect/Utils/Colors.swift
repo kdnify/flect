@@ -135,11 +135,24 @@ extension Color {
 extension Color {
     static func moodColor(for moodName: String) -> Color {
         switch moodName {
+        // New system (FirstCheckInView, sample data)
         case "Rough": return Color.red.opacity(0.6)
         case "Okay": return Color.orange.opacity(0.6)
         case "Neutral": return Color.gray.opacity(0.6)
         case "Good": return Color.blue.opacity(0.6)
         case "Great": return Color.green.opacity(0.6)
+        
+        // DaylioCheckInView system
+        case "Awful": return Color.red.opacity(0.6)
+        case "Bad": return Color.orange.opacity(0.6)
+        case "Amazing": return Color.green.opacity(0.6)
+        
+        // Legacy emoji fallback (in case any old data exists)
+        case "😢", "😞": return Color.red.opacity(0.6)
+        case "😐": return Color.gray.opacity(0.6)
+        case "😊": return Color.blue.opacity(0.6)
+        case "😍", "🤩": return Color.green.opacity(0.6)
+        
         default: return Color.gray.opacity(0.2)
         }
     }

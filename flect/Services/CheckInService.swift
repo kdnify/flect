@@ -850,7 +850,8 @@ class CheckInService: ObservableObject {
                 continue
             }
             
-            let moodEmojis = ["😊", "😌", "😐", "😔", "😭", "🤩", "😴", "😤", "🥳", "😇"]
+            // Use proper mood names that match our color system
+            let moodNames = ["Rough", "Okay", "Neutral", "Good", "Great"]
             let happyThings = [
                 "Had a great workout this morning",
                 "Enjoyed a coffee with a friend",
@@ -877,7 +878,21 @@ class CheckInService: ObservableObject {
                 "Practicing mindfulness"
             ]
             
-            let moodEmoji = moodEmojis.randomElement() ?? "😌"
+            // Create a realistic mood distribution (more good/neutral days than rough ones)
+            let moodWeights = [1, 2, 3, 4, 3] // Rough=1, Okay=2, Neutral=3, Good=4, Great=3
+            let randomWeight = Int.random(in: 1...13) // Total weight is 13
+            var moodIndex = 2 // Default to Neutral
+            var currentWeight = 0
+            
+            for (index, weight) in moodWeights.enumerated() {
+                currentWeight += weight
+                if randomWeight <= currentWeight {
+                    moodIndex = index
+                    break
+                }
+            }
+            
+            let moodName = moodNames[moodIndex]
             let happyThing = happyThings.randomElement() ?? "Had a good day"
             let improveThing = improveThings.randomElement() ?? "Better self-care"
             
@@ -885,7 +900,7 @@ class CheckInService: ObservableObject {
                 date: date,
                 happyThing: happyThing,
                 improveThing: improveThing,
-                moodEmoji: moodEmoji,
+                moodEmoji: moodName, // Now using mood names instead of emojis
                 completionState: .completed,
                 aiResponse: dayOffset < 5 ? "That's wonderful! Keep up the positive momentum! 🌟" : nil,
                 aiQuestionAsked: dayOffset < 5 ? "How can we build on this positive energy tomorrow?" : nil,

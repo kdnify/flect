@@ -16,6 +16,40 @@ class UserPreferencesService: ObservableObject {
         }
     }
     
+    // MARK: - User Journey Tracking
+    
+    @Published var journeyStartDate: Date? {
+        didSet {
+            if let date = journeyStartDate {
+                UserDefaults.standard.set(date, forKey: "journeyStartDate")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "journeyStartDate")
+            }
+        }
+    }
+    
+    @Published var totalCheckIns: Int {
+        didSet {
+            UserDefaults.standard.set(totalCheckIns, forKey: "totalCheckIns")
+        }
+    }
+    
+    @Published var consecutiveCheckInDays: Int {
+        didSet {
+            UserDefaults.standard.set(consecutiveCheckInDays, forKey: "consecutiveCheckInDays")
+        }
+    }
+    
+    @Published var lastCheckInDate: Date? {
+        didSet {
+            if let date = lastCheckInDate {
+                UserDefaults.standard.set(date, forKey: "lastCheckInDate")
+            } else {
+                UserDefaults.standard.removeObject(forKey: "lastCheckInDate")
+            }
+        }
+    }
+    
     // MARK: - Trial & Subscription
     
     @Published var isTrialActive: Bool {
@@ -54,6 +88,12 @@ class UserPreferencesService: ObservableObject {
     
     private init() {
         hasCompletedOnboarding = UserDefaults.standard.bool(forKey: "hasCompletedOnboarding")
+        
+        // Initialize journey tracking
+        self.journeyStartDate = UserDefaults.standard.object(forKey: "journeyStartDate") as? Date
+        self.totalCheckIns = UserDefaults.standard.integer(forKey: "totalCheckIns")
+        self.consecutiveCheckInDays = UserDefaults.standard.integer(forKey: "consecutiveCheckInDays")
+        self.lastCheckInDate = UserDefaults.standard.object(forKey: "lastCheckInDate") as? Date
         
         // Initialize trial & subscription
         self.isTrialActive = UserDefaults.standard.bool(forKey: "isTrialActive")
@@ -343,6 +383,76 @@ class UserPreferencesService: ObservableObject {
         guard let startDate = trialStartDate else { return nil }
         return Calendar.current.date(byAdding: .day, value: 7, to: startDate)
     }
+    
+    // MARK: - Journey Tracking Methods
+    
+    func startJourney() {
+        journeyStartDate = Date()
+        totalCheckIns = 0
+        consecutiveCheckInDays = 0
+        lastCheckInDate = nil
+    }
+    
+    func recordCheckIn() {
+        let today = Date()
+        totalCheckIns += 1
+        
+        // Update consecutive days
+        if let lastDate = lastCheckInDate {
+            let calendar = Calendar.current
+            if calendar.isDate(today, inSameDayAs: lastDate) {
+                // Same day, don't increment consecutive
+            } else if calendar.isDate(today, equalTo: calendar.date(byAdding: .day, value: 1, to: lastDate) ?? today, toGranularity: .day) {
+                // Next day, increment consecutive
+                consecutiveCheckInDays += 1
+            } else {
+                // Gap in days, reset consecutive
+                consecutiveCheckInDays = 1
+            }
+        } else {
+            // First check-in
+            consecutiveCheckInDays = 1
+        }
+        
+        lastCheckInDate = today
+    }
+    
+    var journeyDay: Int {
+        guard let startDate = journeyStartDate else { return 0 }
+        let calendar = Calendar.current
+        let days = calendar.dateComponents([.day], from: startDate, to: Date()).day ?? 0
+        return max(1, days + 1) // Start from day 1
+    }
+    
+    var journeyStage: JourneyStage {
+        let day = journeyDay
+        let consecutive = consecutiveCheckInDays
+        let total = totalCheckIns
+        
+        if day <= 3 {
+            return .onboarding
+        } else if day <= 7 {
+            return .firstWeek
+        } else if day <= 14 {
+            return .secondWeek
+        } else if day <= 30 {
+            return .firstMonth
+        } else if consecutive >= 7 {
+            return .consistent
+        } else if total >= 10 {
+            return .engaged
+        } else {
+            return .casual
+        }
+    }
+    
+    var shouldShowStreakEncouragement: Bool {
+        return consecutiveCheckInDays >= 3 && consecutiveCheckInDays % 3 == 0
+    }
+    
+    var shouldShowMilestoneCelebration: Bool {
+        return totalCheckIns == 7 || totalCheckIns == 14 || totalCheckIns == 30 || totalCheckIns == 100
+    }
 }
 
 // MARK: - Enums (moved from OnboardingFlow for reusability)
@@ -410,4 +520,38 @@ enum PersonalizationContext {
     case encouragement
     case reflection
     case general
+}
+
+enum JourneyStage: String, CaseIterable {
+    case onboarding = "onboarding"
+    case firstWeek = "first_week"
+    case secondWeek = "second_week"
+    case firstMonth = "first_month"
+    case consistent = "consistent"
+    case engaged = "engaged"
+    case casual = "casual"
+    
+    var displayName: String {
+        switch self {
+        case .onboarding: return "Getting Started"
+        case .firstWeek: return "First Week"
+        case .secondWeek: return "Second Week"
+        case .firstMonth: return "First Month"
+        case .consistent: return "Consistent User"
+        case .engaged: return "Engaged User"
+        case .casual: return "Casual User"
+        }
+    }
+    
+    var description: String {
+        switch self {
+        case .onboarding: return "Welcome to your journey! Let's build a foundation."
+        case .firstWeek: return "Building momentum and establishing patterns."
+        case .secondWeek: return "Deepening your practice and discovering insights."
+        case .firstMonth: return "You're developing a sustainable habit!"
+        case .consistent: return "You've built a consistent practice. Amazing!"
+        case .engaged: return "You're deeply engaged with your growth journey."
+        case .casual: return "You're exploring at your own pace."
+        }
+    }
 } 

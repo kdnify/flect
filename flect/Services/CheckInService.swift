@@ -96,6 +96,9 @@ class CheckInService: ObservableObject {
         checkIns.append(checkIn)
         saveCheckIns()
         
+        // Record in journey tracking
+        UserPreferencesService.shared.recordCheckIn()
+        
         // Process with AI for insights (async, doesn't block UI)
         Task {
             await processCheckInWithAI(checkIn)
@@ -138,8 +141,14 @@ class CheckInService: ObservableObject {
             let requestBody: [String: Any] = [
                 "happyThing": checkIn.happyThing,
                 "improveThing": checkIn.improveThing,
-                "userHistory": recentHistory
+                "userHistory": recentHistory,
+                "journeyDay": UserPreferencesService.shared.journeyDay,
+                "journeyStage": UserPreferencesService.shared.journeyStage.rawValue,
+                "totalCheckIns": UserPreferencesService.shared.totalCheckIns,
+                "consecutiveCheckInDays": UserPreferencesService.shared.consecutiveCheckInDays
             ]
+            
+            print("🚀 Journey Info - Day: \(UserPreferencesService.shared.journeyDay), Stage: \(UserPreferencesService.shared.journeyStage.rawValue), Total: \(UserPreferencesService.shared.totalCheckIns), Consecutive: \(UserPreferencesService.shared.consecutiveCheckInDays)")
             
             request.httpBody = try JSONSerialization.data(withJSONObject: requestBody)
             

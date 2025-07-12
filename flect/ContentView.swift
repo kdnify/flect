@@ -51,6 +51,11 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: .onboardingCompleted)) { _ in
             userPreferences.hasCompletedOnboarding = true
             userPreferences.savePreferences()
+            
+            // Start the user's journey when onboarding is completed
+            if userPreferences.journeyStartDate == nil {
+                userPreferences.startJourney()
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("resetToFreshUser"))) { _ in
             userPreferences.loadPreferences() // Reload after reset

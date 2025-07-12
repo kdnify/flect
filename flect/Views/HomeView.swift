@@ -455,7 +455,7 @@ struct HomeView: View {
     private var weeklyOverviewSection: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
-                Text("This Week")
+                Text("Week \(currentWeekNumber)")
                     .font(.system(size: 22, weight: .semibold, design: .default))
                     .foregroundColor(.textMainHex)
                 
@@ -593,6 +593,9 @@ struct HomeView: View {
                                 .foregroundColor(.orange)
                             Text("day streak")
                                 .font(.subheadline)
+                                .foregroundColor(.mediumGreyHex)
+                            Text("Week \(currentWeekNumber)")
+                                .font(.caption)
                                 .foregroundColor(.mediumGreyHex)
                         }
                         
@@ -787,6 +790,11 @@ struct HomeView: View {
     
     private var todaysCheckIn: DailyCheckIn? {
         checkInService.checkIns.first { Calendar.current.isDate($0.date, inSameDayAs: now) }
+    }
+    
+    private var currentWeekNumber: Int {
+        let journeyDay = userPreferences.journeyDay
+        return max(1, (journeyDay - 1) / 7 + 1)
     }
     
     private var recentCheckIns: [DailyCheckIn] {

@@ -180,7 +180,8 @@ function getJourneyBasedPrompt(journeyDay: number, journeyStage: string, totalCh
 1. References something specific from their check-in (their happy thing, improve thing, or highlight)
 2. Connects to their goals if mentioned
 3. Asks ONE thoughtful question that encourages action
-4. Keeps it under 2 sentences total
+4. ALWAYS ends with "Let's flect."
+5. Keeps it under 2 sentences total
 
 IMPORTANT: 
 - Be specific to what they actually wrote
@@ -188,10 +189,11 @@ IMPORTANT:
 - Make it feel like you actually read their entry
 - Ask about something they mentioned wanting to improve
 - Keep it short and actionable
+- EVERY response must end with "Let's flect."
 
 Response format (JSON):
 {
-  "aiResponse": "One short, specific response with a call to action",
+  "aiResponse": "One short, specific response with a call to action, ending with 'Let's flect.'",
   "insights": [
     {
       "type": "pattern|encouragement|suggestion|milestone",

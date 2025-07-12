@@ -10,6 +10,7 @@ struct HomeView: View {
     @State private var showingSprintPlanning = false
     @State private var showingSprintTracking = false
     @State private var showingTaskManagement = false
+    @State private var showingAIChat = false
     
     #if DEBUG
     @State private var showDevTools = false
@@ -17,6 +18,10 @@ struct HomeView: View {
     
     // 1. Add state for dock icon animation
     @State private var dockBounce: [Int: Bool] = [0: false, 1: false, 2: false, 3: false]
+    
+    @State private var showPostSubmission = false
+    @State private var postSubmissionBrainDump: DailyBrainDump? = nil
+    @State private var postSubmissionMood: MoodLevel? = nil
     
     var body: some View {
         NavigationView {
@@ -56,8 +61,22 @@ struct HomeView: View {
             }
             .navigationBarHidden(true)
         }
-        .sheet(isPresented: $showingCheckIn) {
-            MultiStepCheckInView()
+        .sheet(isPresented: $showingCheckIn, onDismiss: {
+            // No-op, handled by notification
+        }) {
+            MultiStepCheckInView(onCheckInComplete: { brainDump, mood in
+                postSubmissionBrainDump = brainDump
+                postSubmissionMood = mood
+                showPostSubmission = true
+            })
+        }
+        .sheet(isPresented: $showPostSubmission, onDismiss: {
+            postSubmissionBrainDump = nil
+            postSubmissionMood = nil
+        }) {
+            if let brainDump = postSubmissionBrainDump, let mood = postSubmissionMood {
+                PostSubmissionView(dailyBrainDump: brainDump, selectedMood: mood)
+            }
         }
         .sheet(isPresented: $showingHistory) {
             HistoryView()
@@ -76,9 +95,12 @@ struct HomeView: View {
                 .foregroundColor(.textMainHex)
         }
         .sheet(isPresented: $showingTaskManagement) {
-            Text("Task Management - Coming Soon!")
-                .font(.title)
-                .foregroundColor(.textMainHex)
+            TaskManagementView()
+        }
+        .sheet(isPresented: $showingAIChat) {
+            if let chatSession = goalService.createAccountabilityChatSession() {
+                AIChatView(chatSession: chatSession)
+            }
         }
         .onAppear {
             checkInService.loadTodaysCheckIn()
@@ -96,7 +118,7 @@ struct HomeView: View {
                 let iconData: (String, String, Color, () -> Void) = [
                     ("brain.head.profile", "Insights", .blue, { showingHistory = true }),
                     ("checklist", "Tasks", .orange, { showingTaskManagement = true }),
-                    ("chart.line.uptrend.xyaxis", "Track", .purple, { showingSprintTracking = true }),
+                    ("message.circle", "Coach", .purple, { showingAIChat = true }),
                     ("target", "Plan", .green, { showingSprintPlanning = true })
                 ][idx]
                 Button(action: {

@@ -469,6 +469,30 @@ class GoalService: ObservableObject {
         }
     }
     
+    func createAccountabilityChatSession() -> ChatSession? {
+        // Check if we already have a session for today
+        if let existingSession = getTodaysChatSession() {
+            return existingSession
+        }
+        
+        // Create a new accountability chat session
+        var session = ChatSession(
+            goalContext: activeGoals.map { $0.id },
+            brainDumpContext: "",
+            moodContext: ""
+        )
+        
+        // Add welcome message
+        let welcomeMessage = createAccountabilityWelcomeMessage()
+        session.addMessage(welcomeMessage)
+        
+        // Save the session
+        chatSessions.append(session)
+        saveChatSessions()
+        
+        return session
+    }
+    
     func addMessageToSession(_ sessionId: UUID, message: ChatMessage) {
         if let index = chatSessions.firstIndex(where: { $0.id == sessionId }) {
             chatSessions[index].addMessage(message)
@@ -600,6 +624,23 @@ class GoalService: ObservableObject {
             let goalNames = relevantGoals.map { $0.category.emoji + " " + $0.title }.joined(separator: ", ")
             return ChatMessage(
                 content: "Great job completing your daily reflection! I see you worked on: \(goalNames). I've read your thoughts and I'm excited to dive deeper with you. What would you like to explore first? 🚀",
+                type: .ai
+            )
+        }
+    }
+    
+    private func createAccountabilityWelcomeMessage() -> ChatMessage {
+        let relevantGoals = activeGoals.filter { !$0.isCompleted }
+        
+        if relevantGoals.isEmpty {
+            return ChatMessage(
+                content: "Hi! I'm your AI accountability coach. I'm here to help you stay on track with your goals and provide support when you need it. What would you like to work on today? 💪",
+                type: .ai
+            )
+        } else {
+            let goalNames = relevantGoals.map { $0.category.emoji + " " + $0.title }.joined(separator: ", ")
+            return ChatMessage(
+                content: "Hi! I'm your AI accountability coach. I can see you're working on: \(goalNames). How are you feeling about your progress? What would you like to focus on today? 🎯",
                 type: .ai
             )
         }
@@ -1086,6 +1127,44 @@ class GoalService: ObservableObject {
         print("🎯 Reset GoalService to sample data")
         print("   Active goals: \(activeGoals.count)")
         print("   Chat sessions: \(chatSessions.count)")
+    }
+    
+    // MARK: - Coach Message for Check-In Complete
+    func getCheckInCoachMessage(mood: MoodLevel, brainDump: DailyBrainDump) async -> String {
+        let userPreferences = UserPreferencesService.shared
+        let personalityType = userPreferences.personalityProfile?.primaryType.rawValue ?? "supporter"
+        let goalTitles = activeGoals.filter { brainDump.goalsWorkedOn.contains($0.id) }.map { $0.title }
+        let checkInSummary = "Mood: \(mood.name), Reflection word count: \(brainDump.wordCount), Sentence count: \(brainDump.sentenceCount)"
+        let reflection = brainDump.brainDumpContent
+        let systemPrompt = "The user just completed a daily check-in. Based on their mood, recent reflections, and goals, write a short, warm, personalized message as their AI coach. Make it feel like a friend who remembers their journey. Reference their goals if possible."
+        let requestPayload: [String: Any] = [
+            "message": "Check-in summary: \(checkInSummary)\nReflection: \(reflection)",
+            "personalityType": personalityType,
+            "goalContext": goalTitles.map { ["title": $0] },
+            "recentCheckIns": [],
+            "conversationHistory": [],
+            "systemPrompt": systemPrompt
+        ]
+        do {
+            let url = URL(string: "https://rinjdpgdcdmtmadabqdf.supabase.co/functions/v1/generate-ai-response")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.setValue("Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJpbmpkcGdkY2RtdG1hZGFicWRmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE0OTQ5MjcsImV4cCI6MjA2NzA3MDkyN30.vtWSWgvZgU1vIFG-wrAjBOi_jmIElwsttAkUvi1kVBg", forHTTPHeaderField: "Authorization")
+            let jsonData = try JSONSerialization.data(withJSONObject: requestPayload)
+            request.httpBody = jsonData
+            let (data, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
+                print("❌ AI API error: \(response)")
+                return "I'm having trouble connecting right now, but I'm proud of you for checking in!"
+            }
+            let aiResponse = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+            let responseText = aiResponse?["response"] as? String ?? "Great job checking in! I'm here for you."
+            return responseText
+        } catch {
+            print("❌ AI API error: \(error)")
+            return "Great job checking in! I'm here for you."
+        }
     }
 }
 

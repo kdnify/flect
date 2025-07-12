@@ -12,6 +12,9 @@ struct MultiStepCheckInView: View {
     @State private var social: Int? = nil // 0=Alone, 1=Some, 2=With Others
     @State private var highlight: String? = nil
     @State private var note: String = ""
+    @State private var showPostSubmission = false
+    
+    var onCheckInComplete: ((DailyBrainDump, MoodLevel) -> Void)? = nil
     
     // For summary
     private var wellbeingScore: Int {
@@ -45,32 +48,46 @@ struct MultiStepCheckInView: View {
         ZStack {
             Color.backgroundHex.ignoresSafeArea()
             VStack(spacing: 32) {
-                // Progress Dots
-                HStack(spacing: 8) {
-                    ForEach(0..<Step.summary.rawValue, id: \ .self) { idx in
-                        Circle()
-                            .fill(idx == step.rawValue ? Color.accentHex : Color.accentHex.opacity(0.18))
-                            .frame(width: 8, height: 8)
-                    }
-                }
-                // Card
-                ZStack {
-                    RoundedRectangle(cornerRadius: 28, style: .continuous)
-                        .fill(LinearGradient(
-                            gradient: Gradient(colors: cardGradient(for: step)),
-                            startPoint: .topLeading, endPoint: .bottomTrailing
-                        ))
-                        .shadow(color: Color.accentHex.opacity(0.08), radius: 12, x: 0, y: 4)
-                    VStack(spacing: 28) {
-                        stepContent
-                    }
-                    .padding(32)
-                }
+                progressDotsView
+                cardView
                 Spacer()
             }
             .padding()
             .animation(.easeInOut, value: step)
         }
+    }
+    
+    @ViewBuilder
+    private var progressDotsView: some View {
+        HStack(spacing: 8) {
+            ForEach(0..<Step.summary.rawValue, id: \.self) { idx in
+                Circle()
+                    .fill(idx == step.rawValue ? Color.accentHex : Color.accentHex.opacity(0.18))
+                    .frame(width: 8, height: 8)
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var cardView: some View {
+        ZStack {
+            cardBackground
+            VStack(spacing: 28) {
+                stepContent
+            }
+            .padding(32)
+        }
+    }
+    
+    @ViewBuilder
+    private var cardBackground: some View {
+        RoundedRectangle(cornerRadius: 28, style: .continuous)
+            .fill(LinearGradient(
+                gradient: Gradient(colors: cardGradient(for: step)),
+                startPoint: .topLeading, 
+                endPoint: .bottomTrailing
+            ))
+            .shadow(color: Color.accentHex.opacity(0.08), radius: 12, x: 0, y: 4)
     }
     
     @ViewBuilder
@@ -91,23 +108,28 @@ struct MultiStepCheckInView: View {
             Text("How are you feeling?")
                 .font(.title2).fontWeight(.semibold)
                 .foregroundColor(.accentHex)
-            HStack(spacing: 24) {
-                ForEach(0..<moodOptions.count, id: \.self) { i in
-                    let option = moodOptions[i]
-                    let icon = option.0
-                    let grad = option.1
-                    Button(action: { mood = i; next() }) {
-                        ZStack {
-                            let gradient = LinearGradient(gradient: Gradient(colors: grad), startPoint: .topLeading, endPoint: .bottomTrailing)
-                            Circle()
-                                .fill(gradient)
-                                .frame(width: 64, height: 64)
-                            Image(systemName: icon)
-                                .font(.system(size: 32, weight: .medium))
-                                .foregroundColor(.white)
-                        }
-                        .shadow(color: grad.first?.opacity(0.18) ?? .clear, radius: 6, x: 0, y: 2)
+            moodButtonsView
+        }
+    }
+    
+    @ViewBuilder
+    private var moodButtonsView: some View {
+        HStack(spacing: 24) {
+            ForEach(0..<moodOptions.count, id: \.self) { i in
+                let option = moodOptions[i]
+                let icon = option.0
+                let grad = option.1
+                Button(action: { mood = i; next() }) {
+                    ZStack {
+                        let gradient = LinearGradient(gradient: Gradient(colors: grad), startPoint: .topLeading, endPoint: .bottomTrailing)
+                        Circle()
+                            .fill(gradient)
+                            .frame(width: 64, height: 64)
+                        Image(systemName: icon)
+                            .font(.system(size: 32, weight: .medium))
+                            .foregroundColor(.white)
                     }
+                    .shadow(color: grad.first?.opacity(0.18) ?? .clear, radius: 6, x: 0, y: 2)
                 }
             }
         }
@@ -190,17 +212,25 @@ struct MultiStepCheckInView: View {
                 .foregroundColor(.accentHex)
             Text("Your wellbeing dot:")
             Circle().fill(dotColor).frame(width: 40, height: 40)
-            Text("Mood: \(moodLabel)\nEnergy: \(energyLabel)\nSleep: \(sleepLabel)\nSocial: \(socialLabel)\nHighlight: \(highlight ?? "None")")
-                .multilineTextAlignment(.center)
-            Button("Done") { 
-                // Save check-in data and dismiss
+            summaryText
+            Button("Done") {
+                // Save check-in data and notify parent
                 saveCheckIn()
+                let brainDump = buildDailyBrainDump()
+                let moodLevel = buildMoodLevel()
+                onCheckInComplete?(brainDump, moodLevel)
                 NotificationCenter.default.post(name: Notification.Name("checkInCompleted"), object: nil)
             }
                 .buttonStyle(.borderedProminent)
                 .tint(.accentHex)
                 .clipShape(Capsule())
         }
+    }
+    
+    @ViewBuilder
+    private var summaryText: some View {
+        Text("Mood: \(moodLabel)\nEnergy: \(energyLabel)\nSleep: \(sleepLabel)\nSocial: \(socialLabel)\nHighlight: \(highlight ?? "None")")
+            .multilineTextAlignment(.center)
     }
     
     private func next() {
@@ -246,6 +276,26 @@ struct MultiStepCheckInView: View {
             } catch {
                 print("Error saving check-in: \(error)")
             }
+        }
+    }
+    // Helper to build DailyBrainDump from current state
+    private func buildDailyBrainDump() -> DailyBrainDump {
+        DailyBrainDump(
+            goalsWorkedOn: [], // Update this to pass actual goal IDs if available
+            brainDumpContent: note,
+            isVoiceNote: false,
+            voiceNotePath: nil
+        )
+    }
+    // Helper to map mood Int to MoodLevel
+    private func buildMoodLevel() -> MoodLevel {
+        switch mood ?? 2 {
+        case 0: return .awful
+        case 1: return .bad
+        case 2: return .neutral
+        case 3: return .good
+        case 4: return .amazing
+        default: return .neutral
         }
     }
 }

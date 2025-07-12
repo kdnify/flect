@@ -5,6 +5,8 @@ struct PostSubmissionView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showingAIChat = false
     @State private var showingCallOption = false
+    @State private var coachMessage: String = ""
+    @State private var isLoadingCoachMessage = true
     
     let dailyBrainDump: DailyBrainDump
     let selectedMood: MoodLevel
@@ -14,21 +16,26 @@ struct PostSubmissionView: View {
             VStack(spacing: 0) {
                 // Header
                 headerSection
-                
-                // Main content
                 Spacer()
-                
-                mainContentSection
-                
+                // Main content: Only the coach message
+                if isLoadingCoachMessage {
+                    ProgressView("Getting your coach's message...")
+                        .padding()
+                } else {
+                    coachMessageSection
+                }
                 Spacer()
-                
-                // Action buttons
-                actionButtonsSection
-                
+                // Action buttons: Only show AI chat if coach message loaded
+                if !isLoadingCoachMessage {
+                    actionButtonsSection
+                }
                 Spacer()
             }
             .background(Color.backgroundHex)
             .navigationBarHidden(true)
+            .onAppear {
+                fetchCoachMessage()
+            }
         }
         .sheet(isPresented: $showingAIChat) {
             if let session = getCurrentChatSession() {
@@ -88,84 +95,25 @@ struct PostSubmissionView: View {
         .shadow(color: .black.opacity(0.05), radius: 2, x: 0, y: 1)
     }
     
-    // MARK: - Main Content Section
-    
-    private var mainContentSection: some View {
-        VStack(spacing: 20) {
-            // AI Coach prompt
-            VStack(spacing: 12) {
-                Text("Ready for your daily coaching session?")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.textMainHex)
-                    .multilineTextAlignment(.center)
-                
-                Text("I've reviewed your reflection and I'm here to help you process your day, celebrate wins, and plan ahead.")
-                    .font(.body)
-                    .foregroundColor(.mediumGreyHex)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 20)
-            }
-            
-            // Context preview
-            contextPreviewSection
-        }
-        .padding(.horizontal, 20)
-    }
-    
-    private var contextPreviewSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Today's Context")
-                .font(.headline)
+    // MARK: - Coach Message Section
+    private var coachMessageSection: some View {
+        VStack(spacing: 24) {
+            Text("Message from your Coach")
+                .font(.title2)
                 .fontWeight(.semibold)
                 .foregroundColor(.textMainHex)
-            
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Text("Mood:")
-                        .font(.body)
-                        .fontWeight(.medium)
-                        .foregroundColor(.textMainHex)
-                    
-                    Text("\(selectedMood.emoji) \(selectedMood.name)")
-                        .font(.body)
-                        .foregroundColor(.mediumGreyHex)
-                    
-                    Spacer()
-                }
-                
-                if !dailyBrainDump.goalsWorkedOn.isEmpty {
-                    HStack {
-                        Text("Goals:")
-                            .font(.body)
-                            .fontWeight(.medium)
-                            .foregroundColor(.textMainHex)
-                        
-                        let relevantGoals = goalService.activeGoals.filter { dailyBrainDump.goalsWorkedOn.contains($0.id) }
-                        Text(relevantGoals.map { $0.title }.joined(separator: ", "))
-                            .font(.body)
-                            .foregroundColor(.mediumGreyHex)
-                        
-                        Spacer()
-                    }
-                }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Reflection:")
-                        .font(.body)
-                        .fontWeight(.medium)
-                        .foregroundColor(.textMainHex)
-                    
-                    Text("\"\(dailyBrainDump.brainDumpContent.prefix(80))\(dailyBrainDump.brainDumpContent.count > 80 ? "..." : "")\"")
-                        .font(.body)
-                        .foregroundColor(.mediumGreyHex)
-                        .italic()
-                }
-            }
+                .multilineTextAlignment(.center)
+            Text(coachMessage)
+                .font(.body)
+                .foregroundColor(.mediumGreyHex)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 20)
         }
-        .padding(16)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 32)
         .background(Color.cardBackgroundHex)
-        .cornerRadius(12)
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
     }
     
     // MARK: - Action Buttons Section
@@ -257,6 +205,27 @@ struct PostSubmissionView: View {
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 34)
+    }
+    
+    // MARK: - Fetch Coach Message
+    private func fetchCoachMessage() {
+        isLoadingCoachMessage = true
+        print("[DEBUG] fetchCoachMessage called")
+        Task {
+            let message = await goalService.getCheckInCoachMessage(
+                mood: selectedMood,
+                brainDump: dailyBrainDump
+            )
+            await MainActor.run {
+                print("[DEBUG] Coach message received: \(message)")
+                if message.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    coachMessage = "(Could not load your coach's message. But I'm still proud of you for checking in today!)"
+                } else {
+                    coachMessage = message
+                }
+                isLoadingCoachMessage = false
+            }
+        }
     }
     
     // MARK: - Helper Functions

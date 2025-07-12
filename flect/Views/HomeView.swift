@@ -175,7 +175,7 @@ struct HomeView: View {
             }
             // Streak indicator (minimal)
             if checkInService.calculateUserEngagement().currentStreak > 0 {
-                HStack {
+                HStack(spacing: 6) {
                     RoundedRectangle(cornerRadius: 2)
                         .fill(LinearGradient(
                             colors: [.orange.opacity(0.8), .red.opacity(0.6)],
@@ -183,7 +183,7 @@ struct HomeView: View {
                             endPoint: .trailing
                         ))
                         .frame(width: 20, height: 4)
-                    Text("\(checkInService.calculateUserEngagement().currentStreak) day streak")
+                    Text("\(checkInService.calculateUserEngagement().currentStreak) day streak · Week \(currentWeekNumber)")
                         .font(.subheadline)
                         .fontWeight(.medium)
                         .foregroundColor(.textMainHex)
